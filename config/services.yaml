@@ -1,0 +1,20 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: true
+
+    Pnl\App\Command\:
+        resource: '../src/App/Command'
+
+    Pnl\App\Command\HelpCommand:
+        class: 'Pnl\App\Command\HelpCommand'
+        arguments:
+            - '@service_container'
+        tags: ['command']
+
+    Pnl\Console\:
+        resource: '../src/Console'
+        exclude:
+            - '../src/Console/Input'
+            - '../src/Console/Output'

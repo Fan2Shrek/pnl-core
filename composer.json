@@ -1,0 +1,27 @@
+{
+    "name": "sruuua/pnl",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Pnl\\": "src/",
+            "App\\Tests\\": "tests/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Fan2Shrek",
+            "email": "pierre27.ambroise@gmail.com"
+        }
+    ],
+    "require-dev": {
+        "symfony/var-dumper": "^6.3",
+        "phpstan/phpstan": "^1.10",
+        "friendsofphp/php-cs-fixer": "^3.37"
+    },
+    "require": {
+        "symfony/dependency-injection": "^6.3",
+        "symfony/config": "^6.3",
+        "symfony/intl": "^6.3",
+        "symfony/yaml": "^6.3"
+    }
+}

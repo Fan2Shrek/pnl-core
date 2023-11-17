@@ -1,0 +1,15 @@
+parameters:
+    level: max
+    checkGenericClassInNonGenericObjectType: false
+
+    paths:
+        - src/
+
+    excludePaths:
+        analyse:
+            - manager
+            - src/Composer
+            - src/File
+            - src/Runtime
+            - src/Service
+            - src/Reflection
