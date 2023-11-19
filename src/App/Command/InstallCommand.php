@@ -2,22 +2,16 @@
 
 namespace Pnl\App\Command;
 
-use Pnl\Application;
 use Pnl\App\AbstractCommand;
-use Pnl\App\CommandInterface;
-use Pnl\Service\ClassAdapter;
-use Pnl\Installer\PreInstaller;
+use Pnl\Installer\COR\PreInstaller;
 use Pnl\Console\Input\ArgumentBag;
 use Pnl\Console\Input\ArgumentType;
 use Pnl\Console\Input\InputInterface;
 use Pnl\Console\Output\ANSI\TextColors;
 use Pnl\Console\Output\OutputInterface;
 use Pnl\Console\Output\Style\CustomStyle;
-use Pnl\Console\Output\ANSI\BackgroundColor;
-use Pnl\App\Exception\CommandNotFoundException;
 use Pnl\Console\Output\ANSI\Style as ANSIStyle;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Pnl\Installer\COR\InstallerCOR;
 
 final class InstallCommand extends AbstractCommand
 {
@@ -25,7 +19,7 @@ final class InstallCommand extends AbstractCommand
 
     private ?CustomStyle $style = null;
 
-    public function __construct(private PreInstaller $installer)
+    public function __construct(private InstallerCOR $installer)
     {
     }
 
@@ -65,13 +59,13 @@ final class InstallCommand extends AbstractCommand
         $this->setStyle($output);
 
         if ($input->style) {
-            $this->installer->setupStyle($this->style);
+            $this->installer->setStyle($this->style);
             $this->style->write(sprintf('Installing : '));
             $this->style->writeWithStyle($input->getNameless(), 'basic');
             $this->style->writeln("");
             $this->style->writeln("");
         }
 
-        $this->installer->install($input->getNameless());
+        $this->installer->check($input->getNameless());
     }
 }

@@ -1,25 +1,21 @@
 <?php
 
-namespace Pnl\Installer;
+namespace Pnl\Installer\COR;
 
+use Pnl\Installer\GithubApi;
+use Pnl\Installer\PnlConfig;
+use Pnl\Installer\RepositoryApi;
 use Pnl\Console\Output\Style\CustomStyle;
 
-class PreInstaller implements InstallerInterface
+class PreInstaller extends AbsractInstaller
 {
-    private ?CustomStyle $style = null;
-
     public function __construct(private readonly GithubApi $client)
     {
     }
 
-    public function setupStyle(CustomStyle $style): void
+    public function install(string $name): ?string
     {
-        $this->style = $style;
-    }
-
-    public function install(string $gitLink): void
-    {
-        $httpLink = $this->getHttpLink($gitLink);
+        $httpLink = $this->getHttpLink($name);
 
         $repositoryClient = RepositoryApi::createFromHttpLink($this->client, $httpLink);
         $result = $repositoryClient->getFileContent('pnl.json');
@@ -29,6 +25,11 @@ class PreInstaller implements InstallerInterface
             $this->style->writeWithStyle('Name found : ', 'green');
             $this->style->writeWithStyle($config->name, 'basic');
         }
+
+        $this->style->writeln('');
+        $this->style->writeln('');
+
+        return $config->name;
     }
 
     private function getHttpLink(string $gitlink): string
