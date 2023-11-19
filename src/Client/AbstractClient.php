@@ -19,6 +19,12 @@ abstract class AbstractClient implements ClientInterface
 
         $response = curl_exec($curl);
 
+        $info = curl_getinfo($curl);
+
+        if ($info['http_code'] !== 200) {
+            throw new \Exception(sprintf('The request failed with code %s', $info['http_code']));
+        }
+
         curl_close($curl);
 
         return json_decode($response, true);
