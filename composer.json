@@ -1,10 +1,9 @@
 {
-    "name": "sruuua/pnl",
+    "name": "pnl/core",
     "type": "project",
     "autoload": {
         "psr-4": {
-            "Pnl\\": "src/",
-            "App\\Tests\\": "tests/"
+            "Pnl\\": "src/"
         }
     },
     "authors": [
