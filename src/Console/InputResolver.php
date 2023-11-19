@@ -3,6 +3,7 @@
 namespace Pnl\Console;
 
 use Pnl\App\CommandInterface;
+use Pnl\Console\Input\InputBag;
 use Pnl\Console\Input\ArgumentBag;
 use Pnl\Console\Input\ArgumentType;
 use Pnl\Console\Input\InputInterface;
@@ -12,20 +13,36 @@ class InputResolver implements InputResolverInterface
 {
     public function resolve(CommandInterface $command, InputInterface $arguments): InputInterface
     {
-        foreach ($command::getArguments()->getAllRequire() as $required) {
-            if (!$arguments->hasArgument($required->getName())) {
-                throw new \Exception(sprintf('The %s argument is required', $required->getName()));
+        $args = $command::getArguments();
+
+        $resolvedBag = new InputBag();
+
+        foreach ($args->getAll() as $argument) {
+            if ($argument->isRequired() && $argument->isNameless() && $arguments->haveNameless()) {
+                $resolvedBag->addArgument($argument->getName(), $arguments->getNameless(), true);
+
+                continue;
+            }
+
+            if ($argument->isRequired() && !$arguments->hasArgument($argument->getName())) {
+                throw new \Exception(sprintf('The %s argument is required', $argument->getName()));
+            }
+
+            if (!$arguments->hasArgument($argument->getName())) {
+                $resolvedBag->addArgument($argument->getName(), $argument->getDefault());
             }
         }
 
         foreach ($arguments->getAllArguments() as $name => $value) {
             $this->validateArgument($name, $value, $command::getArguments());
+            $resolvedBag->addArgument($argument->getName(), $value);
+
         }
 
-        return $arguments;
+        return $resolvedBag;
     }
 
-    private function validateArgument(string $name, mixed $value, ArgumentBag $bag): TRUE
+    private function validateArgument(string $name, mixed $value, ArgumentBag $bag): true
     {
         if (!$bag->has($name)) {
             $commands = array_map(fn ($arg) => $arg->getName(), $bag->getAll());
@@ -57,7 +74,7 @@ class InputResolver implements InputResolverInterface
             case ArgumentType::STRING:
                 return is_string($value);
             case ArgumentType::BOOLEAN:
-                return is_bool($value);
+                return true;
             default:
                 return false;
         }

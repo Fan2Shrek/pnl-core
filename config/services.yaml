@@ -18,3 +18,12 @@ services:
         exclude:
             - '../src/Console/Input'
             - '../src/Console/Output'
+
+    Pnl\Installer\:
+        resource: '../src/Installer'
+        exclude:
+            - '../src/Installer/RepositoryApi.php'
+
+    Pnl\Installer\GithubApi:
+        arguments:
+            - 'https://api.github.com'
