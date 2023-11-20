@@ -2,15 +2,16 @@
 
 namespace Pnl\Installer\COR;
 
+use Pnl\Installer\PnlConfig;
 use Pnl\Console\Output\Style\CustomStyle;
 
 abstract class AbsractInstaller implements InstallerInterface, CORInterface
 {
-    private CORInterface $next;
+    private ?AbsractInstaller $next = null;
 
     protected ?CustomStyle $style = null;
 
-    abstract public function install(string $name): ?string;
+    abstract public function install(PnlConfig $pnlConfig): PnlConfig;
 
     public function linkWith(CORInterface $next): CORInterface
     {
@@ -24,15 +25,19 @@ abstract class AbsractInstaller implements InstallerInterface, CORInterface
         $this->style = $style;
     }
 
-    public function check(string $info): bool
+    public function check(mixed $payload): bool
     {
-        $this->setupStyle($this->style);
-        $info = $this->install($info);
+        if (!$payload instanceof PnlConfig) {
+            return false;
+        }
+
+        $info = $this->install($payload);
 
         if ($this->next === null) {
             return true;
         }
 
+        $this->next->setupStyle($this->style);
         return $this->next->check($info);
     }
 }

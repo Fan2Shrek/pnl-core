@@ -2,6 +2,7 @@
 
 namespace Pnl\Installer\COR;
 
+use Pnl\Installer\PnlConfig;
 use Pnl\Console\Output\Style\CustomStyle;
 
 class InstallerCOR implements InstallerInterface
@@ -10,14 +11,13 @@ class InstallerCOR implements InstallerInterface
 
     public function __construct(
         private readonly PreInstaller $preInstaller,
-        MainInstaller $mainInstaller
     ) {
-        $this->setupChain($preInstaller, $mainInstaller);
+        $this->setupChain($preInstaller);
     }
 
-    public function install(string $name): ?string
+    public function install(PnlConfig $pnlConfig): PnlConfig
     {
-        return $this->preInstaller->install($name);
+        return $this->preInstaller->install($pnlConfig);
     }
 
     public function setStyle(CustomStyle $style): void
@@ -26,15 +26,17 @@ class InstallerCOR implements InstallerInterface
         $this->preInstaller->setupStyle($style);
     }
 
-    private function setupChain(PreInstaller $preInstaller, MainInstaller $mainInstaller): void
+    private function setupChain(PreInstaller $preInstaller): void
     {
-        $preInstaller->linkWith($mainInstaller);
+        $preInstaller
+            ->linkWith(new MainInstaller())
+            ->linkWith(new ClassInstaller());
     }
 
-    public function check(string $info): bool
+    public function check(PnlConfig $pnlConfig): bool
     {
         $this->setStyle($this->style);
-        $info = $this->preInstaller->check($info);
+        $this->preInstaller->check($pnlConfig);
 
         return true;
     }

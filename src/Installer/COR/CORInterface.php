@@ -6,5 +6,5 @@ interface CORInterface
 {
     public function linkWith(CORInterface $next): CORInterface;
 
-    public function check(string $info): bool;
+    public function check(mixed $payload): bool;
 }

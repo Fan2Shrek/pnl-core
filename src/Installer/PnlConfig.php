@@ -6,18 +6,26 @@ readonly class PnlConfig
 {
     public string $name;
 
+    public string $composerName;
+
     public string $mainClass;
 
     public string $installer;
 
-    public static function createFromArray(array $conf): static
+    public string $version;
+
+    public function __construct(public string $gitlink)
     {
-        $pnlConfig = new static();
+    }
 
-        $pnlConfig->name = $conf['name'];
-        $pnlConfig->mainClass = $conf['main-class'];
-        $pnlConfig->installer = $conf['installer'];
+    public function hydrateFromConf(array $conf): static
+    {
+        $this->name = $conf['name'];
+        $this->mainClass = $conf['main-class'];
+        $this->composerName = $conf['composer-name'];
+        $this->installer = $conf['installer'];
+        $this->version = $conf['version'];
 
-        return $pnlConfig;
+        return $this;
     }
 }

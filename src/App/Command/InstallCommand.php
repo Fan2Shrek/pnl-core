@@ -3,7 +3,6 @@
 namespace Pnl\App\Command;
 
 use Pnl\App\AbstractCommand;
-use Pnl\Installer\COR\PreInstaller;
 use Pnl\Console\Input\ArgumentBag;
 use Pnl\Console\Input\ArgumentType;
 use Pnl\Console\Input\InputInterface;
@@ -12,6 +11,7 @@ use Pnl\Console\Output\OutputInterface;
 use Pnl\Console\Output\Style\CustomStyle;
 use Pnl\Console\Output\ANSI\Style as ANSIStyle;
 use Pnl\Installer\COR\InstallerCOR;
+use Pnl\Installer\PnlConfig;
 
 final class InstallCommand extends AbstractCommand
 {
@@ -66,6 +66,6 @@ final class InstallCommand extends AbstractCommand
             $this->style->writeln("");
         }
 
-        $this->installer->check($input->getNameless());
+        $this->installer->check(new PnlConfig($input->getNameless()));
     }
 }

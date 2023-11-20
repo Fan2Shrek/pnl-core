@@ -13,13 +13,13 @@ class PreInstaller extends AbsractInstaller
     {
     }
 
-    public function install(string $name): ?string
+    public function install(PnlConfig $pnlConfig): PnlConfig
     {
-        $httpLink = $this->getHttpLink($name);
+        $httpLink = $this->getHttpLink($pnlConfig->gitlink);
 
         $repositoryClient = RepositoryApi::createFromHttpLink($this->client, $httpLink);
         $result = $repositoryClient->getFileContent('pnl.json');
-        $config = $this->extractConfig($result);
+        $config = $this->extractConfig($pnlConfig, $result);
 
         if ($this->style !== null) {
             $this->style->writeWithStyle('Name found : ', 'green');
@@ -29,7 +29,7 @@ class PreInstaller extends AbsractInstaller
         $this->style->writeln('');
         $this->style->writeln('');
 
-        return $config->name;
+        return $pnlConfig;
     }
 
     private function getHttpLink(string $gitlink): string
@@ -41,10 +41,10 @@ class PreInstaller extends AbsractInstaller
         return $converted;
     }
 
-    private function extractConfig(array $result): PnlConfig
+    private function extractConfig(PnlConfig $pnlConfig, array $result): PnlConfig
     {
         $burpConf = base64_decode($result['content']);
 
-        return PnlConfig::createFromArray(json_decode($burpConf, true));
+        return $pnlConfig->hydrateFromConf(json_decode($burpConf, true));
     }
 }
