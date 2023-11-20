@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Fan2Shrek/pnl-php.git",
-                "reference": "97eef93a7090cd0e5d20624ca90ec62354783774"
+                "reference": "7c1fa64b49a8c111f4892bd63baa39e7204ee066"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Fan2Shrek/pnl-php/zipball/97eef93a7090cd0e5d20624ca90ec62354783774",
-                "reference": "97eef93a7090cd0e5d20624ca90ec62354783774",
+                "url": "https://api.github.com/repos/Fan2Shrek/pnl-php/zipball/7c1fa64b49a8c111f4892bd63baa39e7204ee066",
+                "reference": "7c1fa64b49a8c111f4892bd63baa39e7204ee066",
                 "shasum": ""
             },
             "require": {
@@ -45,7 +45,7 @@
                 "issues": "https://github.com/Fan2Shrek/pnl-php/issues",
                 "source": "https://github.com/Fan2Shrek/pnl-php/tree/main"
             },
-            "time": "2023-11-20T21:16:23+00:00"
+            "time": "2023-11-20T21:52:27+00:00"
         },
         {
             "name": "psr/container",

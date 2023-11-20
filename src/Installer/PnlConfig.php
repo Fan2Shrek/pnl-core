@@ -23,7 +23,7 @@ readonly class PnlConfig
         $this->name = $conf['name'];
         $this->mainClass = $conf['main-class'];
         $this->composerName = $conf['composer-name'];
-        $this->installer = $conf['installer'];
+        $this->installer = $conf['installer'] ?? "";
         $this->version = $conf['version'];
 
         return $this;

@@ -30,7 +30,8 @@ class InstallerCOR implements InstallerInterface
     {
         $preInstaller
             ->linkWith(new MainInstaller())
-            ->linkWith(new ClassInstaller());
+            ->linkWith(new ClassInstaller())
+            ->linkWith(new ExtensionsUpdater());
     }
 
     public function check(PnlConfig $pnlConfig): bool
