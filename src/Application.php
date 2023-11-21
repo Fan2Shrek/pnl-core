@@ -4,7 +4,8 @@ namespace Pnl;
 
 use Composer\Autoload\ClassLoader;
 use Pnl\App\CommandInterface;
-use Pnl\App\DependencyInjection\AddCommandPass;
+use Pnl\App\CommandRunnerInterface;
+use Pnl\App\CommandRunnerTrait;
 use Pnl\App\DependencyInjection\CommandCompiler;
 use Pnl\App\Exception\CommandNotFoundException;
 use Pnl\Composer\ComposerContext;
@@ -13,13 +14,15 @@ use Pnl\Console\InputResolverInterface;
 use Pnl\Console\Input\Input;
 use Pnl\Console\Input\InputInterface;
 use Pnl\Console\Output\ConsoleOutput;
-use Pnl\Service\ClassAdapter;
+use Pnl\Extensions\AbstractExtension;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
-class Application
+class Application implements CommandRunnerInterface
 {
+    use CommandRunnerTrait;
+
     private ContainerBuilder $container;
 
     private ComposerContext $composerContext;
@@ -62,15 +65,21 @@ class Application
             return;
         }
 
-        if ($this->hasCommandName($args[0])) {
-            $name = $args[0];
-            array_shift($args);
-            $this->executeCommand($this->getCommand($name), new Input($args));
+        $commandName = array_shift($args);
+
+        if ($this->hasExtension($commandName)){
+            $this->runExtension($commandName, $args);
 
             return;
         }
 
-        throw new CommandNotFoundException(sprintf('Command %s not found', $args[0]));
+        if ($this->hasCommandName($commandName)) {
+            $this->executeCommand($this->getCommand($commandName), new Input($args));
+
+            return;
+        }
+
+        throw new CommandNotFoundException(sprintf('Command %s not found', $commandName));
     }
 
     private function boot(): void
@@ -112,19 +121,23 @@ class Application
         $this->container = $builder;
     }
 
+    private function runExtension(string $name, array $args = []): void
+    {
+        $extension = $this->getExtension($name);
+
+        if (!$extension->isBooted()) {
+            $extension->boot();
+        }
+
+        $extension->run($args);
+   }
+
     private function registerCommands(): void
     {
         foreach ($this->container->findTaggedServiceIds('command') as $key => $command) {
             /** @phpstan-ignore-next-line */
             $this->addCommand($this->container->get($key));
         }
-    }
-
-    public function executeCommand(CommandInterface $command, InputInterface $input): void
-    {
-        $args = $this->getInputResolver()->resolve($command, $input);
-
-        $command($args, new ConsoleOutput());
     }
 
     public function getInputResolver(): InputResolverInterface
@@ -144,19 +157,42 @@ class Application
         return true;
     }
 
-    private function hasCommandName(string $commandName): bool
+    private function hasExtension(string $extensionName): bool
     {
-        return array_key_exists($commandName, $this->commandList);
+        return isset($this->extensions[$extensionName]);
     }
 
-    private function getCommand(string $commandName): CommandInterface
+    private function getExtension(string $extensionName): AbstractExtension
     {
-        return $this->commandList[$commandName];
+        $extensionClass = $this->extensions[$extensionName];
+
+        if (is_string($extensionClass)) {
+            $extensionInstance = $extensionClass::create($this->container);
+
+            $this->extensions[$extensionName] = $extensionInstance;
+        }
+
+        return $this->extensions[$extensionName];
     }
 
     private function loadExtensions(): void
     {
-        $this->extensions = require $this->appRoot . 'config/extensions.php';
+        $extensions = require $this->appRoot . 'config/extensions.php';
+
+        foreach($extensions as $extension) {
+            $this->addExtension($extension);
+        }
+    }
+
+    private function addExtension(string $extension): void
+    {
+        $reflection = new \ReflectionClass($extension);
+
+        if (!$reflection->isSubclassOf(AbstractExtension::class)) {
+            throw new \Exception(sprintf('Extension %s must extend %s', $extension, AbstractExtension::class));
+        }
+
+        $this->extensions[$extension::getName()] = $extension;
     }
 
     public function addCommand(CommandInterface $command): void

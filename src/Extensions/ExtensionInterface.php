@@ -10,5 +10,5 @@ interface ExtensionInterface
 
     public function getCommands(): array;
 
-    public function getName(): string;
+    public static function getName(): string;
 }
