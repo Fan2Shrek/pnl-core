@@ -11,7 +11,7 @@ class ExtensionsUpdater extends AbsractInstaller
     public function install(PnlConfig $pnlConfig): PnlConfig
     {
         $this->style->writeWithStyle("Updating ", 'green');
-        $this->style->writeWithStyle("config/extensions.php", 'basic');
+        $this->style->writeWithStyle("config/extensions.php...", 'basic');
 
         $this->style->writeln('');
 
@@ -21,6 +21,10 @@ class ExtensionsUpdater extends AbsractInstaller
 
         $this->updateExtensionFile($pnlConfig->mainClass);
 
+        $this->style->writeWithStyle("✅ Done", 'green');
+        $this->style->writeln('');
+        $this->style->writeln('');
+
         return $pnlConfig;
     }
 
@@ -29,20 +33,18 @@ class ExtensionsUpdater extends AbsractInstaller
         $extensions = require_once(self::EXTENSION_FILE);
         $extensions[] = $add;
 
-        // $file = fopen(self::EXTENSION_FILE, 'w');
-
-        // fwrite($file, "<?php\n\nreturn [\n");
+        $content = "<?php\n\nreturn [\n";
 
         foreach ($extensions as $extension) {
-
-
-            dump($extension);
-            // fwrite($file, "    '{$extension}',\n");
+            $content .= "\t$extension::class,\n";
         }
 
-        // fwrite($file, "];");
+        $content .= '];';
 
-        // fclose($file);
+        $file = fopen(self::EXTENSION_FILE, 'w');
+        fwrite($file, $content);
+
+        fclose($file);
     }
 
     private function createExtensionFile(): void

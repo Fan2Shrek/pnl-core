@@ -6,10 +6,10 @@ use Pnl\App\AbstractCommand;
 use Pnl\Console\Input\ArgumentBag;
 use Pnl\Console\Input\ArgumentType;
 use Pnl\Console\Input\InputInterface;
+use Pnl\Console\Output\ANSI\Style as ANSIStyle;
 use Pnl\Console\Output\ANSI\TextColors;
 use Pnl\Console\Output\OutputInterface;
 use Pnl\Console\Output\Style\CustomStyle;
-use Pnl\Console\Output\ANSI\Style as ANSIStyle;
 use Pnl\Installer\COR\InstallerCOR;
 use Pnl\Installer\PnlConfig;
 
@@ -67,5 +67,13 @@ final class InstallCommand extends AbstractCommand
         }
 
         $this->installer->check(new PnlConfig($input->getNameless()));
+
+        if ($input->style) {
+            $this->style->writeWithStyle("Fully install ", 'green');
+            $this->style->writeWithStyle($input->getNameless(), 'basic');
+            $this->style->writeln('');
+            $this->style->writeln('');
+            $this->style->writeWithStyle("Thanks for using PNL ", 'green');
+        }
     }
 }
