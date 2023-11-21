@@ -2,18 +2,18 @@
 
 namespace Pnl;
 
-use Pnl\App\Exception\CommandNotFoundException;
-use Pnl\Console\Input\Input;
-use Pnl\Service\ClassAdapter;
-use Pnl\Composer\ComposerContext;
 use Composer\Autoload\ClassLoader;
 use Pnl\App\CommandInterface;
 use Pnl\App\DependencyInjection\AddCommandPass;
 use Pnl\App\DependencyInjection\CommandCompiler;
-use Pnl\Console\Input\InputInterface;
+use Pnl\App\Exception\CommandNotFoundException;
+use Pnl\Composer\ComposerContext;
 use Pnl\Console\InputResolver;
 use Pnl\Console\InputResolverInterface;
+use Pnl\Console\Input\Input;
+use Pnl\Console\Input\InputInterface;
 use Pnl\Console\Output\ConsoleOutput;
+use Pnl\Service\ClassAdapter;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
@@ -27,6 +27,10 @@ class Application
     /** @phpstan-ignore-next-line */
     private array $context = [];
 
+    private string $appRoot;
+
+    private array $extensions = [];
+
     private bool $isBooted = false;
 
     /**
@@ -38,6 +42,7 @@ class Application
     public function __construct(private ClassLoader $classLoader, array $context = [])
     {
         $this->context = $context;
+        $this->appRoot = __DIR__ . '/../';
     }
 
     /**
@@ -82,6 +87,10 @@ class Application
             $this->initializeContainer();
         }
 
+        if (empty($this->extensions)) {
+            $this->loadExtensions();
+        }
+
         if (empty($this->commandList)) {
             $this->registerCommands();
         }
@@ -93,7 +102,7 @@ class Application
     {
         $builder = new ContainerBuilder();
 
-        $loader = new YamlFileLoader($builder, new FileLocator(__DIR__ . '/../config'));
+        $loader = new YamlFileLoader($builder, new FileLocator($this->appRoot .'/config'));
         $loader->load('services.yaml');
 
         $builder->addCompilerPass(new CommandCompiler());
@@ -145,6 +154,10 @@ class Application
         return $this->commandList[$commandName];
     }
 
+    private function loadExtensions(): void
+    {
+        $this->extensions = require $this->appRoot . 'config/extensions.php';
+    }
 
     public function addCommand(CommandInterface $command): void
     {

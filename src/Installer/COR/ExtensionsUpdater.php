@@ -30,7 +30,7 @@ class ExtensionsUpdater extends AbsractInstaller
 
     private function updateExtensionFile(string $add): void
     {
-        $extensions = require_once(self::EXTENSION_FILE);
+        $extensions = require self::EXTENSION_FILE;
         $extensions[] = $add;
 
         $content = "<?php\n\nreturn [\n";
