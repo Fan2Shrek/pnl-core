@@ -20,21 +20,24 @@ abstract class AbstractExtension implements ExtensionInterface, CommandRunnerInt
 
     private array $commands = [];
 
-    protected static string $name ;
+    protected static string $name;
 
     protected InputResolverInterface $resolver;
+
+    abstract function getCommandTag(): string;
+
+    abstract function prepareContainer(ContainerBuilder $container): void;
 
     public function __construct(InputResolverInterface $resolver)
     {
         $this->resolver = $resolver;
     }
 
-    abstract protected function loadServices(ContainerBuilder $container): void;
-
     public static function create(ContainerBuilder $container): static
     {
         $instance = new static($container->get(InputResolver::class));
-        $instance->loadServices($container);
+        $instance->prepareContainer($container);
+        $instance->loadCommand($container);
 
         return $instance;
     }
@@ -44,6 +47,16 @@ abstract class AbstractExtension implements ExtensionInterface, CommandRunnerInt
         $args = $this->resolver->resolve($command, $input);
 
         $command($args, new ConsoleOutput());
+    }
+
+    public function loadCommand(ContainerBuilder $container): void
+    {
+        dd($this->getCommandTag());
+        dd($container->findTaggedServiceIds($this->getCommandTag()));
+        foreach ($container->findTaggedServiceIds($this->getCommandTag()) as $key => $command) {
+            /** @phpstan-ignore-next-line */
+            $this->addCommand($container->get($key));
+        }
     }
 
     public function boot(): void

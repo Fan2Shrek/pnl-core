@@ -15,6 +15,7 @@ use Pnl\Console\Input\Input;
 use Pnl\Console\Input\InputInterface;
 use Pnl\Console\Output\ConsoleOutput;
 use Pnl\Extensions\AbstractExtension;
+use Pnl\PnlPhp\Commands\HelloCommand;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
@@ -96,10 +97,6 @@ class Application implements CommandRunnerInterface
             $this->initializeContainer();
         }
 
-        if (empty($this->extensions)) {
-            $this->loadExtensions();
-        }
-
         if (empty($this->commandList)) {
             $this->registerCommands();
         }
@@ -115,6 +112,10 @@ class Application implements CommandRunnerInterface
         $loader->load('services.yaml');
 
         $builder->addCompilerPass(new CommandCompiler());
+
+        if (empty($this->extensions)) {
+            $this->loadExtensions($builder);
+        }
 
         $builder->compile();
 
@@ -134,7 +135,7 @@ class Application implements CommandRunnerInterface
 
     private function registerCommands(): void
     {
-        foreach ($this->container->findTaggedServiceIds('command') as $key => $command) {
+        foreach ($this->container->findTaggedServiceIds('app-command') as $key => $command) {
             /** @phpstan-ignore-next-line */
             $this->addCommand($this->container->get($key));
         }
@@ -175,16 +176,16 @@ class Application implements CommandRunnerInterface
         return $this->extensions[$extensionName];
     }
 
-    private function loadExtensions(): void
+    private function loadExtensions(ContainerBuilder $container): void
     {
         $extensions = require $this->appRoot . 'config/extensions.php';
 
         foreach($extensions as $extension) {
-            $this->addExtension($extension);
+            $this->addExtension($extension, $container);
         }
     }
 
-    private function addExtension(string $extension): void
+    private function addExtension(string $extension, ContainerBuilder $container): void
     {
         $reflection = new \ReflectionClass($extension);
 
@@ -192,18 +193,6 @@ class Application implements CommandRunnerInterface
             throw new \Exception(sprintf('Extension %s must extend %s', $extension, AbstractExtension::class));
         }
 
-        $this->extensions[$extension::getName()] = $extension::create($this->container);
-    }
-
-    public function addCommand(CommandInterface $command): void
-    {
-        if (!$this->hasCommand($command)) {
-            $this->commandList[$command->getName()] = $command;
-        }
-    }
-
-    public function hasCommand(CommandInterface $command): bool
-    {
-        return in_array($command->getName(), $this->commandList);
+        $this->extensions[$extension::getName()] = $extension::create($container);
     }
 }
