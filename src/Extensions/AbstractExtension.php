@@ -1,6 +1,7 @@
 <?php
 
 namespace Pnl\Extensions;
+
 use Pnl\App\CommandInterface;
 use Pnl\App\CommandRunnerInterface;
 use Pnl\App\CommandRunnerTrait;
@@ -8,8 +9,8 @@ use Pnl\Console\InputResolver;
 use Pnl\Console\InputResolverInterface;
 use Pnl\Console\Input\Input;
 use Pnl\Console\Input\InputInterface;
-use Pnl\Runtime\Resolver\ResolverInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Pnl\Console\Output\ConsoleOutput;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 abstract class AbstractExtension implements ExtensionInterface, CommandRunnerInterface
 {
@@ -28,14 +29,21 @@ abstract class AbstractExtension implements ExtensionInterface, CommandRunnerInt
         $this->resolver = $resolver;
     }
 
-    public static function create(ContainerInterface $container): static
+    abstract protected function loadServices(ContainerBuilder $container): void;
+
+    public static function create(ContainerBuilder $container): static
     {
-        return new static($container->get(InputResolver::class));
+        $instance = new static($container->get(InputResolver::class));
+        $instance->loadServices($container);
+
+        return $instance;
     }
 
     public function executeCommand(CommandInterface $command, InputInterface $input): void
     {
+        $args = $this->resolver->resolve($command, $input);
 
+        $command($args, new ConsoleOutput());
     }
 
     public function boot(): void
@@ -43,13 +51,8 @@ abstract class AbstractExtension implements ExtensionInterface, CommandRunnerInt
         $this->isBooted = true;
 
         if (empty($this->commands)) {
-            $this->loadCommand();
+            throw new \Exception(sprintf('Extension %s has no commands', static::class));
         }
-    }
-
-    protected function loadCommand(): void
-    {
-        $this->commands = [];
     }
 
     final public function isBooted(): bool

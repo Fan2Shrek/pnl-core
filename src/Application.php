@@ -192,7 +192,7 @@ class Application implements CommandRunnerInterface
             throw new \Exception(sprintf('Extension %s must extend %s', $extension, AbstractExtension::class));
         }
 
-        $this->extensions[$extension::getName()] = $extension;
+        $this->extensions[$extension::getName()] = $extension::create($this->container);
     }
 
     public function addCommand(CommandInterface $command): void
