@@ -8,6 +8,8 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 
 trait CommandRunnerTrait
 {
+    private array $commandList = [];
+
     public function hasCommandName(string $commandName): bool
     {
         return isset($this->commandList[$commandName]);
