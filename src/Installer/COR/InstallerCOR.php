@@ -2,8 +2,8 @@
 
 namespace Pnl\Installer\COR;
 
-use Pnl\Installer\PnlConfig;
 use Pnl\Console\Output\Style\CustomStyle;
+use Pnl\Installer\PnlConfig;
 
 class InstallerCOR implements InstallerInterface
 {
@@ -36,7 +36,9 @@ class InstallerCOR implements InstallerInterface
 
     public function check(PnlConfig $pnlConfig): bool
     {
-        $this->setStyle($this->style);
+        if ($this->style !== null){
+            $this->setStyle($this->style);
+        }
         $this->preInstaller->check($pnlConfig);
 
         return true;

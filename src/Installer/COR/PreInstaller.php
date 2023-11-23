@@ -2,10 +2,10 @@
 
 namespace Pnl\Installer\COR;
 
+use Pnl\Console\Output\Style\CustomStyle;
 use Pnl\Installer\GithubApi;
 use Pnl\Installer\PnlConfig;
 use Pnl\Installer\RepositoryApi;
-use Pnl\Console\Output\Style\CustomStyle;
 
 class PreInstaller extends AbsractInstaller
 {
@@ -18,16 +18,19 @@ class PreInstaller extends AbsractInstaller
         $httpLink = $this->getHttpLink($pnlConfig->gitlink);
 
         $repositoryClient = RepositoryApi::createFromHttpLink($this->client, $httpLink);
+        /**
+         * @var array{
+         *  content: string,
+         * }
+         */
         $result = $repositoryClient->getFileContent('pnl.json');
         $config = $this->extractConfig($pnlConfig, $result);
 
-        if ($this->style !== null) {
-            $this->style->writeWithStyle('Name found : ', 'green');
-            $this->style->writeWithStyle($config->name, 'basic');
-        }
+        $this->writeWithStyle('Name found : ', 'green');
+        $this->writeWithStyle($config->name, 'basic');
 
-        $this->style->writeln('');
-        $this->style->writeln('');
+        $this->writeln('');
+        $this->writeln('');
 
         return $pnlConfig;
     }
@@ -41,10 +44,25 @@ class PreInstaller extends AbsractInstaller
         return $converted;
     }
 
+    /**
+     * @param array{
+     *  content: string,
+     * } $result
+    */
     private function extractConfig(PnlConfig $pnlConfig, array $result): PnlConfig
     {
         $burpConf = base64_decode($result['content']);
+        /**
+         * @var array{
+         *  name: string,
+         *  main-class: string,
+         *  composer-name: string,
+         *  installer?: string,
+         *  version: string,
+         * }
+         */
+        $converted = json_decode($burpConf, true);
 
-        return $pnlConfig->hydrateFromConf(json_decode($burpConf, true));
+        return $pnlConfig->hydrateFromConf($converted);
     }
 }

@@ -22,26 +22,26 @@ class ClassInstaller extends AbsractInstaller
             return $pnlconfig;
         }
 
-        $this->style->writeln('');
-        $this->style->writeWithStyle("✅ Installer class find at ", 'green');
-        $this->style->writeWithStyle($pnlconfig->installer, 'basic');
-        $this->style->writeln('');
-        $this->style->writeWithStyle("🏃 Running installer ", 'green');
-        $this->style->writeWithStyle($pnlconfig->installer, 'basic');
-        $this->style->writeWithStyle("...", 'green');
-        $this->style->writeln('');
-        $this->style->writeln('');
+        $this->writeln('');
+        $this->writeWithStyle("✅ Installer class find at ", 'green');
+        $this->writeWithStyle($pnlconfig->installer, 'basic');
+        $this->writeln('');
+        $this->writeWithStyle("🏃 Running installer ", 'green');
+        $this->writeWithStyle($pnlconfig->installer, 'basic');
+        $this->writeWithStyle("...", 'green');
+        $this->writeln('');
+        $this->writeln('');
 
         $installer->setupStyle($this->style);
         $installer->install($pnlconfig);
 
-        $this->style->writeln('');
+        $this->writeln('');
 
-        $this->style->writeWithStyle("✅ Successfully installed ", 'green');
-        $this->style->writeWithStyle($pnlconfig->name, 'basic');
+        $this->writeWithStyle("✅ Successfully installed ", 'green');
+        $this->writeWithStyle($pnlconfig->name, 'basic');
 
-        $this->style->writeln('');
-        $this->style->writeln('');
+        $this->writeln('');
+        $this->writeln('');
 
         return $pnlconfig;
     }

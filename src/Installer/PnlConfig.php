@@ -2,8 +2,10 @@
 
 namespace Pnl\Installer;
 
-readonly class PnlConfig
+class PnlConfig
 {
+    public string $gitlink;
+
     public string $name;
 
     public string $composerName;
@@ -14,10 +16,20 @@ readonly class PnlConfig
 
     public string $version;
 
-    public function __construct(public string $gitlink)
+    public function __construct(string $gitlink)
     {
+        $this->gitlink = $gitlink;
     }
 
+    /**
+     * @param array{
+     *  name: string,
+     *  main-class: string,
+     *  composer-name: string,
+     *  installer?: string,
+     *  version: string,
+     * } $conf
+     */
     public function hydrateFromConf(array $conf): static
     {
         $this->name = $conf['name'];

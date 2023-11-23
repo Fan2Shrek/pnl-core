@@ -18,11 +18,11 @@ class RepositoryApi extends AbstractClient
         return $this->githubApi->request($this->generateUrl() . $path, $body, $header);
     }
 
-    public static function createFromHttpLink(GithubApi $githubApi, string $link): static
+    public static function createFromHttpLink(GithubApi $githubApi, string $link): self
     {
         $splitted = explode('/', $link);
 
-        return new static($githubApi, $splitted[3], $splitted[4]);
+        return new self($githubApi, $splitted[3], $splitted[4]);
     }
 
     public function getFileContent(string $filePath): mixed
@@ -46,6 +46,7 @@ class RepositoryApi extends AbstractClient
             }
           }', true);
 
+          /** @phpstan-ignore-next-line */
         return $this->request(sprintf('%s%s', '/contents/', $filePath));
     }
 

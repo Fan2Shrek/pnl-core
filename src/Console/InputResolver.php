@@ -3,11 +3,11 @@
 namespace Pnl\Console;
 
 use Pnl\App\CommandInterface;
-use Pnl\Console\Input\InputBag;
 use Pnl\Console\Input\ArgumentBag;
-use Pnl\Console\Input\ArgumentType;
-use Pnl\Console\Input\InputInterface;
 use Pnl\Console\Input\ArgumentDefinition;
+use Pnl\Console\Input\ArgumentType;
+use Pnl\Console\Input\InputBag;
+use Pnl\Console\Input\InputInterface;
 
 class InputResolver implements InputResolverInterface
 {

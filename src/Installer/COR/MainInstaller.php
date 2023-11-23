@@ -13,7 +13,7 @@ class MainInstaller extends AbsractInstaller
 
     private function proccessInstall(PnlConfig $pnlConfig): PnlConfig
     {
-        $this->style->writeWithStyle('Looking for composer...', 'green');
+        $this->writeWithStyle('Looking for composer...', 'green');
 
         $composer = exec('which composer');
 
@@ -21,23 +21,23 @@ class MainInstaller extends AbsractInstaller
             throw new \Exception('Composer not found');
         }
 
-        $this->style->writeln('');
-        $this->style->writeWithStyle(sprintf('✅ Composer find at %s', $composer), 'basic');
-        $this->style->use('basic');
-        $this->style->writeln(sprintf('⌛ Running composer require %s with version %s', $pnlConfig->composerName, $pnlConfig->version));
-        $this->style->writeln('');
-        $this->style->writeln('');
+        $this->writeln('');
+        $this->writeWithStyle(sprintf('✅ Composer find at %s', $composer), 'basic');
+        $this->use('basic');
+        $this->writeln(sprintf('⌛ Running composer require %s with version %s', $pnlConfig->composerName, $pnlConfig->version));
+        $this->writeln('');
+        $this->writeln('');
 
         exec(sprintf('composer require %s:%s', $pnlConfig->composerName, $pnlConfig->version));
 
-        $this->style->writeln('');
-        $this->style->writeWithStyle('Successfully install ', 'green');
-        $this->style->writeWithStyle($pnlConfig->composerName, 'basic');
-        $this->style->writeWithStyle(' with ', 'green');
-        $this->style->writeWithStyle($pnlConfig->version, 'basic');
-        $this->style->writeWithStyle(sprintf(' version 🎉', $pnlConfig->composerName, $pnlConfig->version), 'green');
-        $this->style->use('basic');
-        $this->style->writeln('');
+        $this->writeln('');
+        $this->writeWithStyle('Successfully install ', 'green');
+        $this->writeWithStyle($pnlConfig->composerName, 'basic');
+        $this->writeWithStyle(' with ', 'green');
+        $this->writeWithStyle($pnlConfig->version, 'basic');
+        $this->writeWithStyle(' version 🎉', 'green');
+        $this->use('basic');
+        $this->writeln('');
 
         return $pnlConfig;
     }

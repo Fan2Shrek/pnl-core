@@ -2,8 +2,9 @@
 
 namespace Pnl\Installer\COR;
 
-use Pnl\Installer\PnlConfig;
+use Pnl\Console\Output\OutputInterface;
 use Pnl\Console\Output\Style\CustomStyle;
+use Pnl\Installer\PnlConfig;
 
 abstract class AbsractInstaller implements InstallerInterface, CORInterface
 {
@@ -23,6 +24,42 @@ abstract class AbsractInstaller implements InstallerInterface, CORInterface
     public function setupStyle(?CustomStyle $style): void
     {
         $this->style = $style;
+    }
+
+    public function write(string $message): void
+    {
+        if ($this->style === null) {
+            return;
+        }
+
+        $this->style->write($message);
+    }
+
+    public function writeln(string $message): void
+    {
+        if ($this->style === null) {
+            return;
+        }
+
+        $this->style->writeln($message);
+    }
+
+    public function writeWithStyle(string $message, string $style): void
+    {
+        if ($this->style === null) {
+            return;
+        }
+
+        $this->style->writeWithStyle($message, $style);
+    }
+
+    public function use(string $style): void
+    {
+        if ($this->style === null) {
+            return;
+        }
+
+        $this->style->use($style);
     }
 
     public function check(mixed $payload): bool

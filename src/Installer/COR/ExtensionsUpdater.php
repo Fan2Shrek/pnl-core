@@ -10,10 +10,10 @@ class ExtensionsUpdater extends AbsractInstaller
 
     public function install(PnlConfig $pnlConfig): PnlConfig
     {
-        $this->style->writeWithStyle("Updating ", 'green');
-        $this->style->writeWithStyle("config/extensions.php...", 'basic');
+        $this->writeWithStyle("Updating ", 'green');
+        $this->writeWithStyle("config/extensions.php...", 'basic');
 
-        $this->style->writeln('');
+        $this->writeln('');
 
         if (!file_exists(self::EXTENSION_FILE)) {
             $this->createExtensionFile();
@@ -21,9 +21,9 @@ class ExtensionsUpdater extends AbsractInstaller
 
         $this->updateExtensionFile($pnlConfig->mainClass);
 
-        $this->style->writeWithStyle("✅ Done", 'green');
-        $this->style->writeln('');
-        $this->style->writeln('');
+        $this->writeWithStyle("✅ Done", 'green');
+        $this->writeln('');
+        $this->writeln('');
 
         return $pnlConfig;
     }
@@ -33,8 +33,8 @@ class ExtensionsUpdater extends AbsractInstaller
         $extensions = require self::EXTENSION_FILE;
 
         if (in_array($add, $extensions)) {
-            $this->style->writeWithStyle(sprintf("🟨 %s already exists", $add), 'green');
-            $this->style->writeln('');
+            $this->writeWithStyle(sprintf("🟨 %s already exists", $add), 'green');
+            $this->writeln('');
 
             return;
         }
@@ -50,6 +50,11 @@ class ExtensionsUpdater extends AbsractInstaller
         $content .= '];';
 
         $file = fopen(self::EXTENSION_FILE, 'w');
+
+        if (!$file){
+            throw new \Exception(sprintf('Cannot open file %s', self::EXTENSION_FILE));
+        }
+
         fwrite($file, $content);
 
         fclose($file);
@@ -57,14 +62,18 @@ class ExtensionsUpdater extends AbsractInstaller
 
     private function createExtensionFile(): void
     {
-        $this->style->writeWithStyle("Creating ", 'green');
-        $this->style->writeWithStyle("config/extensions.php", 'basic');
+        $this->writeWithStyle("Creating ", 'green');
+        $this->writeWithStyle("config/extensions.php", 'basic');
 
-        $this->style->writeln('');
+        $this->writeln('');
 
         touch(self::EXTENSION_FILE);
 
         $file = fopen(self::EXTENSION_FILE, 'w');
+
+        if (!$file){
+            throw new \Exception(sprintf('Cannot create file %s', self::EXTENSION_FILE));
+        }
 
         fwrite($file, "<?php\n\nreturn [\n];");
 
