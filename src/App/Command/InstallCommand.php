@@ -57,7 +57,7 @@ final class InstallCommand extends AbstractCommand
     {
         $this->setStyle($output);
 
-        if ($input->style) {
+        if ($input->get('style')) {
             $this->installer->setStyle($this->style);
             $this->style->write(sprintf('Installing : '));
             $this->style->writeWithStyle($input->getNameless(), 'basic');
@@ -67,7 +67,7 @@ final class InstallCommand extends AbstractCommand
 
         $this->installer->check(new PnlConfig($input->getNameless()));
 
-        if ($input->style) {
+        if ($input->get('style')) {
             $this->style->writeWithStyle("Fully install ", 'green');
             $this->style->writeWithStyle($input->getNameless(), 'basic');
             $this->style->writeln('');
