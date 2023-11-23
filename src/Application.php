@@ -125,11 +125,6 @@ class Application implements CommandRunnerInterface
     private function runExtension(string $name, array $args = []): void
     {
         $extension = $this->getExtension($name);
-
-        if (!$extension->isBooted()) {
-            $extension->boot();
-        }
-
         $extension->run($args);
    }
 
@@ -166,14 +161,9 @@ class Application implements CommandRunnerInterface
     private function getExtension(string $extensionName): AbstractExtension
     {
         $extensionClass = $this->extensions[$extensionName];
+        $extensionClass->boot($this->container);
 
-        if (is_string($extensionClass)) {
-            $extensionInstance = $extensionClass::create($this->container);
-
-            $this->extensions[$extensionName] = $extensionInstance;
-        }
-
-        return $this->extensions[$extensionName];
+        return $extensionClass;
     }
 
     private function loadExtensions(ContainerBuilder $container): void

@@ -4,7 +4,7 @@ namespace Pnl\App;
 
 use Pnl\App\CommandInterface;
 use Pnl\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\ConsoleOutput;
+use Pnl\Console\Output\ConsoleOutput;
 
 trait CommandRunnerTrait
 {
