@@ -3,8 +3,8 @@
 namespace Pnl\App\DependencyInjection;
 
 use Pnl\App\AbstractCommand;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 
 final class CommandCompiler implements CompilerPassInterface
@@ -20,7 +20,10 @@ final class CommandCompiler implements CompilerPassInterface
                     $reflection = new \ReflectionClass($class);
 
                     if ($reflection->isSubclassOf(AbstractCommand::class)) {
-                        $serviceDefinition->addTag('command');
+                        $exploded = explode('\\', $serviceDefinition->getClass());
+                        $tagName = strtolower($exploded[1]);
+
+                        $serviceDefinition->addTag($tagName . '-command');
                     }
                 }
             } catch (ServiceNotFoundException $e) {

@@ -53,7 +53,6 @@ final class InstallCommand extends AbstractCommand
         $this->style = $style;
     }
 
-
     public function __invoke(InputInterface $input, OutputInterface $output): void
     {
         $this->setStyle($output);

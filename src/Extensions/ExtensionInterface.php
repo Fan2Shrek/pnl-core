@@ -2,9 +2,11 @@
 
 namespace Pnl\Extensions;
 
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+
 interface ExtensionInterface
 {
-    public function boot(): void;
+    public function boot(ContainerBuilder $container): void;
 
     public function isBooted(): bool;
 

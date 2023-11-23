@@ -4,7 +4,7 @@ namespace Pnl\App;
 
 use Pnl\App\CommandInterface;
 use Pnl\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\ConsoleOutput;
+use Pnl\Console\Output\ConsoleOutput;
 
 trait CommandRunnerTrait
 {
@@ -13,6 +13,18 @@ trait CommandRunnerTrait
     public function hasCommandName(string $commandName): bool
     {
         return isset($this->commandList[$commandName]);
+    }
+
+    public function addCommand(CommandInterface $command): void
+    {
+        if (!$this->hasCommand($command)) {
+            $this->commandList[$command->getName()] = $command;
+        }
+    }
+
+    public function hasCommand(CommandInterface $command): bool
+    {
+        return in_array($command->getName(), $this->commandList);
     }
 
     public function getCommand(string $commandName): CommandInterface
