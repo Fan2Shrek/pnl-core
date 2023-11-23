@@ -2,6 +2,7 @@
 
 namespace Pnl\Extensions;
 
+use Pnl\App\CommandInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 interface ExtensionInterface
@@ -11,7 +12,7 @@ interface ExtensionInterface
     public function isBooted(): bool;
 
     /**
-     * @return string[]
+     * @return array<string, CommandInterface>
      */
     public function getCommands(): array;
 

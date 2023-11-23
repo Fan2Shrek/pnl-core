@@ -57,19 +57,22 @@ final class InstallCommand extends AbstractCommand
     {
         $this->setStyle($output);
 
-        if ($input->get('style')) {
+        /** @var string */
+        $gitLink = $input->getNameless();
+
+        if ($input->get('style') && $this->style !== null) {
             $this->installer->setStyle($this->style);
             $this->style->write(sprintf('Installing : '));
-            $this->style->writeWithStyle($input->getNameless(), 'basic');
+            $this->style->writeWithStyle($gitLink, 'basic');
             $this->style->writeln("");
             $this->style->writeln("");
         }
 
-        $this->installer->check(new PnlConfig($input->getNameless()));
+        $this->installer->check(new PnlConfig($gitLink));
 
-        if ($input->get('style')) {
+        if ($input->get('style') && $this->style !== null) {
             $this->style->writeWithStyle("Fully install ", 'green');
-            $this->style->writeWithStyle($input->getNameless(), 'basic');
+            $this->style->writeWithStyle($gitLink, 'basic');
             $this->style->writeln('');
             $this->style->writeln('');
             $this->style->writeWithStyle("Thanks for using PNL ", 'green');

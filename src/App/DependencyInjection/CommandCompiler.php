@@ -20,7 +20,7 @@ final class CommandCompiler implements CompilerPassInterface
                     $reflection = new \ReflectionClass($class);
 
                     if ($reflection->isSubclassOf(AbstractCommand::class)) {
-                        $exploded = explode('\\', $serviceDefinition->getClass());
+                        $exploded = explode('\\', $class);
                         $tagName = strtolower($exploded[1]);
 
                         $serviceDefinition->addTag($tagName . '-command');

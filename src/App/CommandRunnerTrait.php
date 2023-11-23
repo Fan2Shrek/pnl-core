@@ -2,12 +2,14 @@
 
 namespace Pnl\App;
 
+use Pnl\App\AbstractCommand;
 use Pnl\App\CommandInterface;
 use Pnl\Console\Input\InputInterface;
 use Pnl\Console\Output\ConsoleOutput;
 
 trait CommandRunnerTrait
 {
+    /** @var array <string, CommandInterface> */
     private array $commandList = [];
 
     public function hasCommandName(string $commandName): bool
@@ -30,6 +32,14 @@ trait CommandRunnerTrait
     public function getCommand(string $commandName): CommandInterface
     {
         return $this->commandList[$commandName];
+    }
+
+    /**
+     * @return array<string, CommandInterface>
+     */
+    public function getCommands(): array
+    {
+        return $this->commandList;
     }
 
     public function executeCommand(CommandInterface $command, InputInterface $input): void

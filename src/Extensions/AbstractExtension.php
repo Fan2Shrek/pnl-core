@@ -19,11 +19,6 @@ abstract class AbstractExtension implements ExtensionInterface, CommandRunnerInt
 
     private bool $isBooted = false;
 
-    /**
-     * @var string[]
-     */
-    private array $commands = [];
-
     protected static string $name;
 
     protected InputResolverInterface $resolver;
@@ -67,7 +62,7 @@ abstract class AbstractExtension implements ExtensionInterface, CommandRunnerInt
             return;
         }
 
-        if (empty($this->commands)) {
+        if (empty($this->commandList)) {
             $this->loadCommand($container);
         }
 
@@ -77,11 +72,6 @@ abstract class AbstractExtension implements ExtensionInterface, CommandRunnerInt
     final public function isBooted(): bool
     {
         return $this->isBooted;
-    }
-
-    final public function getCommands(): array
-    {
-        return $this->commands;
     }
 
     final public static function getName(): string
