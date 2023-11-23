@@ -19,6 +19,9 @@ abstract class AbstractExtension implements ExtensionInterface, CommandRunnerInt
 
     private bool $isBooted = false;
 
+    /**
+     * @var string[]
+     */
     private array $commands = [];
 
     protected static string $name;
@@ -36,6 +39,7 @@ abstract class AbstractExtension implements ExtensionInterface, CommandRunnerInt
 
     public static function create(ContainerBuilder $container): static
     {
+        /** @phpstan-ignore-next-line */
         $instance = new static($container->get(InputResolver::class));
         $instance->prepareContainer($container);
 
@@ -89,6 +93,9 @@ abstract class AbstractExtension implements ExtensionInterface, CommandRunnerInt
         return static::$name;
     }
 
+    /**
+     * @param string[] $args
+     */
     public function run(array $args): void
     {
         if (!$this->hasCommandName($args[0])){

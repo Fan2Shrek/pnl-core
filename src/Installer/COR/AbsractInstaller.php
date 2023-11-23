@@ -16,6 +16,10 @@ abstract class AbsractInstaller implements InstallerInterface, CORInterface
 
     public function linkWith(CORInterface $next): CORInterface
     {
+        if (!$next instanceof AbsractInstaller) {
+            throw new \Exception(sprintf('Next must be instance of %s', AbsractInstaller::class));
+        }
+
         $this->next = $next;
 
         return $next;

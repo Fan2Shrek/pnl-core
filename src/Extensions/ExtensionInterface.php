@@ -10,6 +10,9 @@ interface ExtensionInterface
 
     public function isBooted(): bool;
 
+    /**
+     * @return string[]
+     */
     public function getCommands(): array;
 
     public static function getName(): string;
