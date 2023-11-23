@@ -15,9 +15,6 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Starting docker
-        run: docker-compose up -d
-
       - name: php phpstan
         run: make phpstan
 
