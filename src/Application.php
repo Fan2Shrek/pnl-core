@@ -33,6 +33,7 @@ class Application implements CommandRunnerInterface
 
     private string $appRoot;
 
+    /** @var AbstractExtension[] */
     private array $extensions = [];
 
     private bool $isBooted = false;
@@ -122,6 +123,9 @@ class Application implements CommandRunnerInterface
         $this->container = $builder;
     }
 
+    /**
+     * @param string[] $args
+     */
     private function runExtension(string $name, array $args = []): void
     {
         $extension = $this->getExtension($name);
@@ -175,6 +179,9 @@ class Application implements CommandRunnerInterface
         }
     }
 
+    /**
+     * @param class-string<AbstractExtension> $extension
+     */
     private function addExtension(string $extension, ContainerBuilder $container): void
     {
         $reflection = new \ReflectionClass($extension);
