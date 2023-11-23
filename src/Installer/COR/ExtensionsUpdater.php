@@ -31,6 +31,14 @@ class ExtensionsUpdater extends AbsractInstaller
     private function updateExtensionFile(string $add): void
     {
         $extensions = require self::EXTENSION_FILE;
+
+        if (in_array($add, $extensions)) {
+            $this->style->writeWithStyle(sprintf("🟨 %s already exists", $add), 'green');
+            $this->style->writeln('');
+
+            return;
+        }
+
         $extensions[] = $add;
 
         $content = "<?php\n\nreturn [\n";
