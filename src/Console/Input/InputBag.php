@@ -9,7 +9,7 @@ class InputBag implements InputInterface
 
     private mixed $nameless = null;
 
-    public function __get(string $name): mixed
+    public function get(string $name): mixed
     {
         if ($this->hasArgument($name)) {
             return $this->argumentsList[$name];

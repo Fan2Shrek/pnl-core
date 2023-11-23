@@ -2,22 +2,42 @@
 
 namespace Pnl\Installer;
 
-readonly class PnlConfig
+class PnlConfig
 {
+    public string $gitlink;
+
     public string $name;
+
+    public string $composerName;
 
     public string $mainClass;
 
     public string $installer;
 
-    public static function createFromArray(array $conf): static
+    public string $version;
+
+    public function __construct(string $gitlink)
     {
-        $pnlConfig = new static();
+        $this->gitlink = $gitlink;
+    }
 
-        $pnlConfig->name = $conf['name'];
-        $pnlConfig->mainClass = $conf['main-class'];
-        $pnlConfig->installer = $conf['installer'];
+    /**
+     * @param array{
+     *  name: string,
+     *  main-class: string,
+     *  composer-name: string,
+     *  installer?: string,
+     *  version: string,
+     * } $conf
+     */
+    public function hydrateFromConf(array $conf): static
+    {
+        $this->name = $conf['name'];
+        $this->mainClass = $conf['main-class'];
+        $this->composerName = $conf['composer-name'];
+        $this->installer = $conf['installer'] ?? "";
+        $this->version = $conf['version'];
 
-        return $pnlConfig;
+        return $this;
     }
 }

@@ -27,6 +27,16 @@ abstract class AbstractClient implements ClientInterface
 
         curl_close($curl);
 
-        return json_decode($response, true);
+        if (!is_string($response)) {
+            throw new \Exception('Can\'t read the response');
+        }
+
+        $decodeContent = json_decode($response, true);
+
+        if (!$decodeContent) {
+            throw new \Exception('The response is not a valid json');
+        }
+
+        return $decodeContent;
     }
 }

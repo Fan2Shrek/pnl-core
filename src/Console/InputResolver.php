@@ -3,11 +3,11 @@
 namespace Pnl\Console;
 
 use Pnl\App\CommandInterface;
-use Pnl\Console\Input\InputBag;
 use Pnl\Console\Input\ArgumentBag;
-use Pnl\Console\Input\ArgumentType;
-use Pnl\Console\Input\InputInterface;
 use Pnl\Console\Input\ArgumentDefinition;
+use Pnl\Console\Input\ArgumentType;
+use Pnl\Console\Input\InputBag;
+use Pnl\Console\Input\InputInterface;
 
 class InputResolver implements InputResolverInterface
 {
@@ -35,8 +35,7 @@ class InputResolver implements InputResolverInterface
 
         foreach ($arguments->getAllArguments() as $name => $value) {
             $this->validateArgument($name, $value, $command::getArguments());
-            $resolvedBag->addArgument($argument->getName(), $value);
-
+            $resolvedBag->addArgument($name, $value);
         }
 
         return $resolvedBag;

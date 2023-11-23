@@ -17,7 +17,7 @@ class Input implements InputInterface
         $this->argumentsList = $this->parseArguments($args);
     }
 
-    public function __get(string $name): mixed
+    public function get(string $name): mixed
     {
         if ($this->hasArgument($name)) {
             return $this->argumentsList[$name];

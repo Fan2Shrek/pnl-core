@@ -19,10 +19,14 @@ services:
             - '../src/Console/Input'
             - '../src/Console/Output'
 
+    Pnl\Installer\Cor\InstallerCor:
+        class: 'Pnl\Installer\Cor\InstallerCor'
+
     Pnl\Installer\:
         resource: '../src/Installer'
         exclude:
             - '../src/Installer/RepositoryApi.php'
+            - '../src/Installer/PnlConfig.php'
 
     Pnl\Installer\GithubApi:
         arguments:
