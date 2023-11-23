@@ -35,8 +35,7 @@ class InputResolver implements InputResolverInterface
 
         foreach ($arguments->getAllArguments() as $name => $value) {
             $this->validateArgument($name, $value, $command::getArguments());
-            $resolvedBag->addArgument($argument->getName(), $value);
-
+            $resolvedBag->addArgument($name, $value);
         }
 
         return $resolvedBag;
