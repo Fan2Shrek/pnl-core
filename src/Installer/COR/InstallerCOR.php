@@ -36,7 +36,7 @@ class InstallerCOR implements InstallerInterface
 
     public function check(PnlConfig $pnlConfig): bool
     {
-        if ($this->style !== null){
+        if ($this->style !== null) {
             $this->setStyle($this->style);
         }
         $this->preInstaller->check($pnlConfig);

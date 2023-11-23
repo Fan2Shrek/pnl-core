@@ -76,6 +76,7 @@ final class InstallCommand extends AbstractCommand
             $this->style->writeln('');
             $this->style->writeln('');
             $this->style->writeWithStyle("Thanks for using PNL ", 'green');
+            $this->style->writeln("");
         }
     }
 }

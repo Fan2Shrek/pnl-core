@@ -23,9 +23,9 @@ abstract class AbstractExtension implements ExtensionInterface, CommandRunnerInt
 
     protected InputResolverInterface $resolver;
 
-    abstract function getCommandTag(): string;
+    abstract public function getCommandTag(): string;
 
-    abstract function prepareContainer(ContainerBuilder $container): void;
+    abstract public function prepareContainer(ContainerBuilder $container): void;
 
     public function __construct(InputResolverInterface $resolver)
     {
@@ -88,7 +88,7 @@ abstract class AbstractExtension implements ExtensionInterface, CommandRunnerInt
      */
     public function run(array $args): void
     {
-        if (!$this->hasCommandName($args[0])){
+        if (!$this->hasCommandName($args[0])) {
             throw new \Exception(sprintf('Command %s not found', $args[0]));
         }
 

@@ -1,0 +1,25 @@
+name: PHP Stan
+
+on: [push]
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+      - name: Starting docker
+        run: docker-compose up -d
+
+      - name: php phpstan
+        run: make phpstan
+
+      - name: php code linter
+        run: make phpcs

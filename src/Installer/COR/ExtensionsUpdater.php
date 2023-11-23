@@ -51,7 +51,7 @@ class ExtensionsUpdater extends AbsractInstaller
 
         $file = fopen(self::EXTENSION_FILE, 'w');
 
-        if (!$file){
+        if (!$file) {
             throw new \Exception(sprintf('Cannot open file %s', self::EXTENSION_FILE));
         }
 
@@ -71,7 +71,7 @@ class ExtensionsUpdater extends AbsractInstaller
 
         $file = fopen(self::EXTENSION_FILE, 'w');
 
-        if (!$file){
+        if (!$file) {
             throw new \Exception(sprintf('Cannot create file %s', self::EXTENSION_FILE));
         }
 

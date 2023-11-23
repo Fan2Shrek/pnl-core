@@ -3,3 +3,6 @@ phpstan:
 
 fixcs:
 	vendor/bin/php-cs-fixer fix src
+
+phpcs:
+	vendor/bin/php-cs-fixer fix src --dry-run

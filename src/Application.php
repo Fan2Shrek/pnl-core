@@ -69,7 +69,7 @@ class Application implements CommandRunnerInterface
 
         $commandName = array_shift($args);
 
-        if ($this->hasExtension($commandName)){
+        if ($this->hasExtension($commandName)) {
             $this->runExtension($commandName, $args);
 
             return;
@@ -130,7 +130,7 @@ class Application implements CommandRunnerInterface
     {
         $extension = $this->getExtension($name);
         $extension->run($args);
-   }
+    }
 
     private function registerCommands(): void
     {

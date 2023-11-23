@@ -46,7 +46,7 @@ class RepositoryApi extends AbstractClient
             }
           }', true);
 
-          /** @phpstan-ignore-next-line */
+        /** @phpstan-ignore-next-line */
         return $this->request(sprintf('%s%s', '/contents/', $filePath));
     }
 
