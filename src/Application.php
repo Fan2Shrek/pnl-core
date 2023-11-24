@@ -153,10 +153,15 @@ class Application implements CommandRunnerInterface
         }
     }
 
+    /**
+     * @todo fix background color
+     */
     private function handleException(\Throwable $e): void
     {
         $width = (int)exec('tput cols');
         $message = $e->getMessage();
+
+        $lastTrace = $e->getTrace()[0];
 
         if (strlen($message) < $width) {
             $offset = (int)floor(($width - strlen($message)) / 2);
@@ -170,8 +175,10 @@ class Application implements CommandRunnerInterface
             ->setColor(TextColors::RESET)
             ->setStyle(AnsiStyle::BOLD);
 
-        $errorStyle->writeln('');
-        $errorStyle->writeln(str_repeat(' ', $offset) . strtoupper($e->getMessage()));
+        $errorStyle->start();
+        $errorStyle->writeln(sprintf('From: %s:%d', $lastTrace['class'] ?? 'unknown', $lastTrace['line'] ?? "unknown"));
+        $errorStyle->writeln("");
+        $errorStyle->writeln(str_repeat(' ', $offset) . $e->getMessage());
         $errorStyle->writeln('');
         $errorStyle->writeln('');
     }
