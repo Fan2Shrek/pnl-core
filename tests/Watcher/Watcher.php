@@ -13,7 +13,9 @@ class Watcher
 
     private Closure $closure;
 
-    public function observDir(string $dirName, string $parent = null): void
+    private ?Closure $exceptionHandler = null;
+
+    private function observDir(string $dirName, string $parent = null): void
     {
         if (null !== $parent) {
             $dirName = $parent . '/' . $dirName;
@@ -37,8 +39,7 @@ class Watcher
             if ($this->filesMap[$path] !== filemtime($path)) {
                 $this->filesMap[$path] = filemtime($path);
 
-                echo "\033[2J\033[;H";
-                ($this->closure)();
+                $this->execute();
             }
         }
     }
@@ -47,12 +48,36 @@ class Watcher
     {
         $this->closure = $closure;
 
-        ($this->closure)();
+        $this->execute();
 
-        while (1) {
+        do {
             sleep(1);
-
             $this->observDir($path);
+        } while (1);
+    }
+
+    private function execute(): void
+    {
+        echo "\033[2J\033[;H";
+
+        try {
+            ($this->closure)();
+        } catch (\Throwable $e) {
+            $this->handleException($e);
         }
+    }
+
+    private function handleException(\Throwable $e): void
+    {
+        if (null !== $this->exceptionHandler) {
+            ($this->exceptionHandler)($e);
+        } else {
+            echo $e->getMessage();
+        }
+    }
+
+    public function setExceptionHandler(Closure $exceptionHandler): void
+    {
+        $this->exceptionHandler = $exceptionHandler;
     }
 }
