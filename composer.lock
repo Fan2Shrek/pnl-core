@@ -4,49 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a8c4734ea25e810701bd3eee059d9c17",
+    "content-hash": "c21643ed4beab375082cc471107f836c",
     "packages": [
-        {
-            "name": "pnl/pnl-php",
-            "version": "dev-main",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Fan2Shrek/pnl-php.git",
-                "reference": "9143e84c080e987f5dd4757db4633eb8621ec1e0"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Fan2Shrek/pnl-php/zipball/9143e84c080e987f5dd4757db4633eb8621ec1e0",
-                "reference": "9143e84c080e987f5dd4757db4633eb8621ec1e0",
-                "shasum": ""
-            },
-            "require": {
-                "pnl/core": "dev-develop"
-            },
-            "default-branch": true,
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Pnl\\PnlPhp\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fan2Shrek",
-                    "email": "pierre27.ambroise@gmail.com"
-                }
-            ],
-            "description": "Php basic commands for pnl",
-            "support": {
-                "issues": "https://github.com/Fan2Shrek/pnl-php/issues",
-                "source": "https://github.com/Fan2Shrek/pnl-php/tree/main"
-            },
-            "time": "2023-11-23T20:08:45+00:00"
-        },
         {
             "name": "psr/container",
             "version": "2.0.2",
@@ -2403,12 +2362,10 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "pnl/pnl-php": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
     "platform-dev": [],
-    "plugin-api-version": "2.2.0"
+    "plugin-api-version": "2.3.0"
 }

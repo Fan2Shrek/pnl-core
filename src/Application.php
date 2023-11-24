@@ -172,6 +172,10 @@ class Application implements CommandRunnerInterface
 
     private function loadExtensions(ContainerBuilder $container): void
     {
+        if (!file_exists($this->appRoot . 'config/extensions.php')) {
+            return;
+        }
+
         $extensions = require $this->appRoot . 'config/extensions.php';
 
         foreach($extensions as $extension) {
