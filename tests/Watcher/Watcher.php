@@ -59,6 +59,7 @@ class Watcher
     private function execute(): void
     {
         echo "\033[2J\033[;H";
+        echo "File changed\n";
 
         try {
             ($this->closure)();

@@ -2,23 +2,21 @@
 
 namespace Pnl\App\Command;
 
-use Pnl\Application;
 use Pnl\App\AbstractCommand;
 use Pnl\App\CommandInterface;
-use Pnl\Service\ClassAdapter;
+use Pnl\App\Exception\CommandNotFoundException;
+use Pnl\Application;
 use Pnl\Console\Input\ArgumentBag;
 use Pnl\Console\Input\ArgumentType;
 use Pnl\Console\Input\InputInterface;
+use Pnl\Console\Output\ANSI\BackgroundColor;
+use Pnl\Console\Output\ANSI\Style as ANSIStyle;
 use Pnl\Console\Output\ANSI\TextColors;
 use Pnl\Console\Output\OutputInterface;
 use Pnl\Console\Output\Style\CustomStyle;
-use Pnl\Console\Output\ANSI\BackgroundColor;
-use Pnl\App\Exception\CommandNotFoundException;
-use Pnl\Console\Output\ANSI\Style as ANSIStyle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
-final class HelpCommand extends AbstractCommand
+class HelpCommand extends AbstractCommand
 {
     protected const NAME = 'help';
 
