@@ -56,6 +56,7 @@ function execPnl(): void
     $pointer = popen('./pnl '. join(' ', $_SERVER['argv']), 'r');
 }
 
+trigger_error(sprintf('Tests with %s is deprecated use /tests/pnlTest instead', __FILE__), E_USER_DEPRECATED);
 $filesMap = [];
 
 execPnl();
