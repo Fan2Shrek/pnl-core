@@ -11,7 +11,6 @@ use Pnl\Console\Input\Input;
 use Pnl\Console\Input\InputInterface;
 use Pnl\Console\Output\ConsoleOutput;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 abstract class AbstractExtension implements ExtensionInterface, CommandRunnerInterface
 {

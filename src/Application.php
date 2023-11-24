@@ -12,11 +12,14 @@ use Pnl\Composer\ComposerContext;
 use Pnl\Console\InputResolver;
 use Pnl\Console\InputResolverInterface;
 use Pnl\Console\Input\Input;
-use Pnl\Console\Input\InputInterface;
+use Pnl\Console\Output\ANSI\BackgroundColor;
+use Pnl\Console\Output\ANSI\Style as AnsiStyle;
+use Pnl\Console\Output\ANSI\TextColors;
 use Pnl\Console\Output\ConsoleOutput;
+use Pnl\Console\Output\Style\Style;
 use Pnl\Extensions\AbstractExtension;
-use Pnl\PnlPhp\Commands\HelloCommand;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\Console\Color;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
@@ -53,35 +56,45 @@ class Application implements CommandRunnerInterface
     /**
      * @param string[] $args
      * */
-    public function run(array $args = []): void
+    public function run(array $args = []): int
     {
         $this->boot();
+
+        $exceptionClosuer = function (\Throwable $e) {
+            $this->handleException($e);
+        };
+
+        set_exception_handler($exceptionClosuer);
 
         if (empty($this->commandList)) {
             throw new \Exception('No commands found');
         }
 
-        if (empty($args)) {
-            $this->executeCommand($this->getCommand('help'), new Input($args));
+        $commandName = !empty($args) ? array_shift($args) : 'help' ;
 
-            return;
+        if (!$this->hasCommandName($commandName) && !$this->hasExtension($commandName)) {
+            throw new CommandNotFoundException(sprintf('Command %s not found', $commandName));
         }
 
-        $commandName = array_shift($args);
+        try {
+            if ($this->hasExtension($commandName)) {
+                $this->runExtension($commandName, $args);
+            } else {
+                $this->executeCommand($this->getCommand($commandName), new Input($args));
+            }
 
-        if ($this->hasExtension($commandName)) {
-            $this->runExtension($commandName, $args);
+            $exitCode = 0;
+        } catch (\Exception $e) {
+            $exitCode = $e->getCode();
 
-            return;
+            $this->handleException($e);
+
+            if (0 === $exitCode || is_string($exitCode)) {
+                $exitCode = 1;
+            }
         }
 
-        if ($this->hasCommandName($commandName)) {
-            $this->executeCommand($this->getCommand($commandName), new Input($args));
-
-            return;
-        }
-
-        throw new CommandNotFoundException(sprintf('Command %s not found', $commandName));
+        return $exitCode;
     }
 
     private function boot(): void
@@ -138,6 +151,36 @@ class Application implements CommandRunnerInterface
             /** @phpstan-ignore-next-line */
             $this->addCommand($this->container->get($key));
         }
+    }
+
+    /**
+     * @todo fix background color
+     */
+    private function handleException(\Throwable $e): void
+    {
+        $width = (int)exec('tput cols');
+        $message = $e->getMessage();
+
+        $lastTrace = $e->getTrace()[0];
+
+        if (strlen($message) < $width) {
+            $offset = (int)floor(($width - strlen($message)) / 2);
+        } else {
+            $offset = 0;
+        }
+
+        $errorStyle = new Style(new ConsoleOutput());
+
+        $errorStyle->setBackground(BackgroundColor::RED)
+            ->setColor(TextColors::RESET)
+            ->setStyle(AnsiStyle::BOLD);
+
+        $errorStyle->start();
+        $errorStyle->writeln(sprintf('From: %s:%d', $lastTrace['class'] ?? 'unknown', $lastTrace['line'] ?? "unknown"));
+        $errorStyle->writeln("");
+        $errorStyle->writeln(str_repeat(' ', $offset) . $e->getMessage());
+        $errorStyle->writeln('');
+        $errorStyle->writeln('');
     }
 
     public function getInputResolver(): InputResolverInterface

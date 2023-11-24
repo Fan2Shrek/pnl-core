@@ -17,6 +17,6 @@ class AppRunner implements RunnerInterface
             array_shift($args);
         }
 
-        $this->app->run($args);
+        exit($this->app->run($args));
     }
 }
