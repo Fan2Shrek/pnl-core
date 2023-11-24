@@ -21,7 +21,7 @@ class HelpCommand extends AbstractCommand
     protected const NAME = 'help';
 
     /**
-     * @var CommandInterface[]
+     * @var array<string, CommandInterface[]>
      */
     private array $commandList = [];
 
@@ -53,7 +53,7 @@ class HelpCommand extends AbstractCommand
             if ($key !== self::class) {
                 /** @var AbstractCommand */
                 $command = $container->get($key);
-                $this->commandList[$extensions][$command->getName()] = $command;
+                $this->commandList[(string)$extensions][$command->getName()] = $command;
             }
         }
 
@@ -96,6 +96,15 @@ class HelpCommand extends AbstractCommand
 
     private function getDetail(string $commandName): void
     {
+        foreach ($this->commandList as $commands) {
+            if (isset($commands[$commandName])) {
+                $command = $commands[$commandName];
+                $this->printCommand($command);
+
+                return;
+            }
+        }
+
         if (!isset($this->commandList[$commandName])) {
             throw new CommandNotFoundException(sprintf('Command %s does not exist', $commandName));
         }

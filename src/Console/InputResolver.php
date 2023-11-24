@@ -22,6 +22,10 @@ class InputResolver implements InputResolverInterface
                 $resolvedBag->addArgument($argument->getName(), $arguments->getNameless(), true);
 
                 continue;
+            } else if ($argument->isNameless() && $arguments->haveNameless()) {
+                $resolvedBag->addArgument($argument->getName(), $arguments->getNameless(), true);
+
+                continue;
             }
 
             if ($argument->isRequired() && !$arguments->hasArgument($argument->getName())) {
