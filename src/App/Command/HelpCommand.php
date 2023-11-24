@@ -105,16 +105,6 @@ class HelpCommand extends AbstractCommand
             }
         }
 
-        if (!isset($this->commandList[$commandName])) {
-            throw new CommandNotFoundException(sprintf('Command %s does not exist', $commandName));
-        }
-
-        $command = $this->commandList[$commandName];
-
-        $this->printCommand($command);
-
-        /**@todo Arguments */
-
         return;
     }
 
@@ -130,11 +120,13 @@ class HelpCommand extends AbstractCommand
         foreach ($this->commandList as $extension => $commands) {
             /** @phpstan-ignore-next-line */
             $this->style->newLine();
+            /** @phpstan-ignore-next-line */
             $this->style->writeWithStyle(
                 sprintf('%s extension :', ucfirst($extension)),
                 'name'
             );
             foreach ($commands as $command) {
+                /** @phpstan-ignore-next-line */
                 $this->style->newLine();
                 $this->printCommand($command, true);
             }
