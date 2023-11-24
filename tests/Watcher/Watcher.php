@@ -8,9 +8,6 @@ class Watcher
 {
     private array $filesMap = [];
 
-    /** @var resource */
-    private mixed $pointer;
-
     private Closure $closure;
 
     private ?Closure $exceptionHandler = null;
@@ -59,7 +56,7 @@ class Watcher
     private function execute(): void
     {
         echo "\033[2J\033[;H";
-        echo "File changed\n";
+        echo sprintf("File changed at %s\n", date('H:i:s'));
 
         try {
             ($this->closure)();

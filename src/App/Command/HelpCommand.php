@@ -44,15 +44,20 @@ class HelpCommand extends AbstractCommand
 
     private function getAllCommand(ContainerBuilder $container): void
     {
-        foreach ($container->findTaggedServiceIds('command') as $key => $command) {
+        foreach ($container->findTaggedServiceIds('command') as $key => $tags) {
+            if (!isset($tags[0]['extensions'])) {
+                $extensions = 'unknown';
+            } else {
+                $extensions = $tags[0]['extensions'];
+            }
             if ($key !== self::class) {
                 /** @var AbstractCommand */
                 $command = $container->get($key);
-                $this->commandList[$command->getName()] = $command;
+                $this->commandList[$extensions][$command->getName()] = $command;
             }
         }
 
-        $this->commandList[self::NAME] = $this;
+        $this->commandList['app'][self::NAME] = $this;
     }
 
     private function setStyle(OutputInterface $output): void
@@ -113,14 +118,21 @@ class HelpCommand extends AbstractCommand
         $this->style->write('Available commands :');
         $this->style->newLine();
 
-        foreach ($this->commandList as $command) {
+        foreach ($this->commandList as $extension => $commands) {
             /** @phpstan-ignore-next-line */
             $this->style->newLine();
-            $this->printCommand($command);
+            $this->style->writeWithStyle(
+                sprintf('%s extension :', ucfirst($extension)),
+                'name'
+            );
+            foreach ($commands as $command) {
+                $this->style->newLine();
+                $this->printCommand($command, true);
+            }
         }
     }
 
-    private function printCommand(CommandInterface $command): void
+    private function printCommand(CommandInterface $command, bool $indent = false): void
     {
         if (null === $this->style) {
             throw new \Exception(sprintf('Style is not set, you should call %s() before', 'setStyle'));
@@ -129,11 +141,11 @@ class HelpCommand extends AbstractCommand
         $width = (int)exec('tput cols');
 
         $this->style->writeWithStyle(
-            sprintf('%s :', ucfirst($command->getName())),
+            sprintf('%s%s :', $indent ? "\t" : "", ucfirst($command->getName())),
             'name'
         );
 
-        $spaces = $width - strlen($command->getName()) - strlen($command->getDescription()) - 3;
+        $spaces = $width - strlen($command->getName()) - strlen($command->getDescription()) - 3 - 8;
 
         if ($spaces < 0) {
             $spaces = 0;
