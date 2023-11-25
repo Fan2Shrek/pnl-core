@@ -18,7 +18,11 @@ class EndlessApplication extends Application
 
         $watcher->watch(
             __DIR__ . '/../src',
-            fn () => parent::run($args)
+            function () use ($args) {
+                $app = popen('./pnl ' . join(' ', $args), 'r');
+
+                return $app;
+            }
         );
 
         return 1;

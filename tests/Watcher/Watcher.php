@@ -10,6 +10,8 @@ class Watcher
 
     private Closure $closure;
 
+    private mixed $output;
+
     private ?Closure $exceptionHandler = null;
 
     private function observDir(string $dirName, string $parent = null): void
@@ -39,6 +41,11 @@ class Watcher
                 $this->execute();
             }
         }
+
+        while (!feof($this->output)) {
+            $output = fgets($this->output);
+            echo $output;
+        }
     }
 
     public function watch(string $path, Closure $closure): void
@@ -59,7 +66,7 @@ class Watcher
         echo sprintf("File changed at %s\n", date('H:i:s'));
 
         try {
-            ($this->closure)();
+            $this->output = ($this->closure)();
         } catch (\Throwable $e) {
             $this->handleException($e);
         }
