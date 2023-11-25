@@ -19,13 +19,14 @@ use Pnl\Console\Output\ConsoleOutput;
 use Pnl\Console\Output\Style\Style;
 use Pnl\Extensions\AbstractExtension;
 use Symfony\Component\Config\FileLocator;
-use Symfony\Component\Console\Color;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 class Application implements CommandRunnerInterface
 {
     use CommandRunnerTrait;
+
+    private string $version = '0.0.1';
 
     private ContainerBuilder $container;
 
@@ -71,6 +72,12 @@ class Application implements CommandRunnerInterface
         }
 
         $commandName = !empty($args) ? array_shift($args) : 'help' ;
+
+        if (in_array($commandName, ['-v', '--version'])) {
+            echo sprintf("PNL version: %s\n", $this->version);
+
+            return 0;
+        }
 
         if (!$this->hasCommandName($commandName) && !$this->hasExtension($commandName)) {
             throw new CommandNotFoundException(sprintf('Command %s not found', $commandName));

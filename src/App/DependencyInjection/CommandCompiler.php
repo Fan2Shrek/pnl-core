@@ -24,6 +24,7 @@ final class CommandCompiler implements CompilerPassInterface
                         $tagName = strtolower($exploded[1]);
 
                         $serviceDefinition->addTag($tagName . '-command');
+                        $serviceDefinition->addTag('command', ['extensions' => $tagName]);
                     }
                 }
             } catch (ServiceNotFoundException $e) {

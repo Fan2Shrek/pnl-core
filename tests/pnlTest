@@ -1,0 +1,9 @@
+#!/usr/bin/env php
+<?php
+
+use Composer\Autoload\ClassLoader;
+use Pnl\Test\EndlessApplication;
+
+require_once 'runtime.php';
+
+return fn (ClassLoader $classLoader, array $context) => new EndlessApplication($classLoader, $context);

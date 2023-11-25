@@ -2,28 +2,26 @@
 
 namespace Pnl\App\Command;
 
-use Pnl\Application;
 use Pnl\App\AbstractCommand;
 use Pnl\App\CommandInterface;
-use Pnl\Service\ClassAdapter;
+use Pnl\App\Exception\CommandNotFoundException;
+use Pnl\Application;
 use Pnl\Console\Input\ArgumentBag;
 use Pnl\Console\Input\ArgumentType;
 use Pnl\Console\Input\InputInterface;
+use Pnl\Console\Output\ANSI\BackgroundColor;
+use Pnl\Console\Output\ANSI\Style as ANSIStyle;
 use Pnl\Console\Output\ANSI\TextColors;
 use Pnl\Console\Output\OutputInterface;
 use Pnl\Console\Output\Style\CustomStyle;
-use Pnl\Console\Output\ANSI\BackgroundColor;
-use Pnl\App\Exception\CommandNotFoundException;
-use Pnl\Console\Output\ANSI\Style as ANSIStyle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
-final class HelpCommand extends AbstractCommand
+class HelpCommand extends AbstractCommand
 {
     protected const NAME = 'help';
 
     /**
-     * @var CommandInterface[]
+     * @var array<string, CommandInterface[]>
      */
     private array $commandList = [];
 
@@ -46,15 +44,20 @@ final class HelpCommand extends AbstractCommand
 
     private function getAllCommand(ContainerBuilder $container): void
     {
-        foreach ($container->findTaggedServiceIds('command') as $key => $command) {
+        foreach ($container->findTaggedServiceIds('command') as $key => $tags) {
+            if (!isset($tags[0]['extensions'])) {
+                $extensions = 'unknown';
+            } else {
+                $extensions = $tags[0]['extensions'];
+            }
             if ($key !== self::class) {
                 /** @var AbstractCommand */
                 $command = $container->get($key);
-                $this->commandList[$command->getName()] = $command;
+                $this->commandList[(string)$extensions][$command->getName()] = $command;
             }
         }
 
-        $this->commandList[self::NAME] = $this;
+        $this->commandList['app'][self::NAME] = $this;
     }
 
     private function setStyle(OutputInterface $output): void
@@ -93,15 +96,14 @@ final class HelpCommand extends AbstractCommand
 
     private function getDetail(string $commandName): void
     {
-        if (!isset($this->commandList[$commandName])) {
-            throw new CommandNotFoundException(sprintf('Command %s does not exist', $commandName));
+        foreach ($this->commandList as $commands) {
+            if (isset($commands[$commandName])) {
+                $command = $commands[$commandName];
+                $this->printCommand($command);
+
+                return;
+            }
         }
-
-        $command = $this->commandList[$commandName];
-
-        $this->printCommand($command);
-
-        /**@todo Arguments */
 
         return;
     }
@@ -115,14 +117,23 @@ final class HelpCommand extends AbstractCommand
         $this->style->write('Available commands :');
         $this->style->newLine();
 
-        foreach ($this->commandList as $command) {
+        foreach ($this->commandList as $extension => $commands) {
             /** @phpstan-ignore-next-line */
             $this->style->newLine();
-            $this->printCommand($command);
+            /** @phpstan-ignore-next-line */
+            $this->style->writeWithStyle(
+                sprintf('%s extension :', ucfirst($extension)),
+                'name'
+            );
+            foreach ($commands as $command) {
+                /** @phpstan-ignore-next-line */
+                $this->style->newLine();
+                $this->printCommand($command, true);
+            }
         }
     }
 
-    private function printCommand(CommandInterface $command): void
+    private function printCommand(CommandInterface $command, bool $indent = false): void
     {
         if (null === $this->style) {
             throw new \Exception(sprintf('Style is not set, you should call %s() before', 'setStyle'));
@@ -131,11 +142,11 @@ final class HelpCommand extends AbstractCommand
         $width = (int)exec('tput cols');
 
         $this->style->writeWithStyle(
-            sprintf('%s :', ucfirst($command->getName())),
+            sprintf('%s%s :', $indent ? "\t" : "", ucfirst($command->getName())),
             'name'
         );
 
-        $spaces = $width - strlen($command->getName()) - strlen($command->getDescription()) - 3;
+        $spaces = $width - strlen($command->getName()) - strlen($command->getDescription()) - 3 - 8;
 
         if ($spaces < 0) {
             $spaces = 0;
