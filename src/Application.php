@@ -196,10 +196,10 @@ class Application implements CommandRunnerInterface
         return $this->container->get(InputResolver::class);
     }
 
-    private function loadComposerContext(): true
+    private function loadComposerContext(): bool
     {
         if (!file_exists('composer.json')) {
-            throw new \Exception('composer.json not found');
+            return false;
         }
 
         $this->composerContext = ComposerContext::createFromJson('composer.json');
