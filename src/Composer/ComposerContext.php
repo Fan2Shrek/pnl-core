@@ -56,9 +56,9 @@ readonly class ComposerContext
          *  autoload: array<string, string>,
          *  authors: string[],
          *  require: string[],
-         *  require-dev: string[]
+         *  require-dev?: string[]
          * }
-        */
+         */
         $json = json_decode($content, true);
 
         $self = new self(
@@ -67,7 +67,7 @@ readonly class ComposerContext
             $json['autoload'],
             $json['authors'],
             $json['require'],
-            $json['require-dev']
+            $json['require-dev'] ?? []
         );
 
         return $self;
