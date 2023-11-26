@@ -4,6 +4,6 @@
 use Composer\Autoload\ClassLoader;
 use Pnl\Test\EndlessApplication;
 
-require_once 'runtime.php';
+require_once __DIR__ . '/../runtime.php';
 
 return fn (ClassLoader $classLoader, array $context) => new EndlessApplication($classLoader, $context);
