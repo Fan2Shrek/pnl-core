@@ -1,6 +1,6 @@
 <?php
 
-$classLoader = require 'vendor/autoload.php';
+$classLoader = require __DIR__ . '/vendor/autoload.php';
 
 if (!isset($_SERVER['SCRIPT_FILENAME'])) {
     print_r('Script filename not found');

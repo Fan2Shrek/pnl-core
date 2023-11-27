@@ -63,6 +63,7 @@ class Watcher
     private function execute(): void
     {
         echo "\033[2J\033[;H";
+        echo "\033[39;49m";
         echo sprintf("File changed at %s\n", date('H:i:s'));
 
         try {

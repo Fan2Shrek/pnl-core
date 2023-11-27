@@ -71,7 +71,7 @@ class Application implements CommandRunnerInterface
             throw new \Exception('No commands found');
         }
 
-        $commandName = !empty($args) ? array_shift($args) : 'help' ;
+        $commandName = !empty($args) ? array_shift($args) : 'help';
 
         if (in_array($commandName, ['-v', '--version'])) {
             echo sprintf("PNL version: %s\n", $this->version);
@@ -129,9 +129,10 @@ class Application implements CommandRunnerInterface
     {
         $builder = new ContainerBuilder();
 
-        $loader = new YamlFileLoader($builder, new FileLocator($this->appRoot .'/config'));
+        $loader = new YamlFileLoader($builder, new FileLocator($this->appRoot . '/config'));
         $loader->load('services.yaml');
 
+        $builder->set($this::class, $this);
         $builder->addCompilerPass(new CommandCompiler());
 
         if (empty($this->extensions)) {
@@ -228,7 +229,7 @@ class Application implements CommandRunnerInterface
 
         $extensions = require $this->appRoot . 'config/extensions.php';
 
-        foreach($extensions as $extension) {
+        foreach ($extensions as $extension) {
             $this->addExtension($extension, $container);
         }
     }
@@ -245,5 +246,10 @@ class Application implements CommandRunnerInterface
         }
 
         $this->extensions[$extension::getName()] = $extension::create($container);
+    }
+
+    public function get(string $name): ?string
+    {
+        return $this->context[$name] ?? null;
     }
 }
