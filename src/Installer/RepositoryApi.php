@@ -27,7 +27,6 @@ class RepositoryApi extends AbstractClient
 
     public function getFileContent(string $filePath): mixed
     {
-        /** @phpstan-ignore-next-line */
         return $this->request(sprintf('%s%s', '/contents/', $filePath));
     }
 
