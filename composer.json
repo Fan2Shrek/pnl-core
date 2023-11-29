@@ -22,7 +22,6 @@
         "symfony/dependency-injection": "^6.3",
         "symfony/config": "^6.3",
         "symfony/intl": "^6.3",
-        "symfony/yaml": "^6.3",
-        "pnl/pnl-php": "dev-main"
+        "symfony/yaml": "^6.3"
     }
 }
