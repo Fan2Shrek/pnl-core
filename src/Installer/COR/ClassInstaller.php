@@ -13,13 +13,13 @@ class ClassInstaller extends AbsractInstaller
 
     private function proccessInstall(PnlConfig $pnlconfig): PnlConfig
     {
+        if ("" === $pnlconfig->installer) {
+            return $pnlconfig;
+        }
+
         $installer = new $pnlconfig->installer();
         if (!$installer instanceof AbsractInstaller) {
             throw new \Exception(sprintf('Installer must be instance of %s', AbsractInstaller::class));
-        }
-
-        if ("" === $pnlconfig->installer) {
-            return $pnlconfig;
         }
 
         $this->writeln('');
