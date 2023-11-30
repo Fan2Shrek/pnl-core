@@ -2,10 +2,10 @@
 
 namespace Pnl\Console\Output\Style;
 
+use Pnl\Console\Output\ANSI\BackgroundColor;
 use Pnl\Console\Output\ANSI\Style;
 use Pnl\Console\Output\ANSI\TextColors;
 use Pnl\Console\Output\OutputInterface;
-use Pnl\Console\Output\ANSI\BackgroundColor;
 
 abstract class AbstractStyle implements StyleInterface, OutputInterface
 {
