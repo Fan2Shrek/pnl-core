@@ -71,9 +71,9 @@ class InputResolver implements InputResolverInterface
 
         switch ($definition->getType()) {
             case ArgumentType::INT:
-                return is_numeric($value);
+                return is_numeric($value) && is_int($value + 0);
             case ArgumentType::FLOAT:
-                return is_float($value);
+                return is_numeric($value) && is_float($value + 0);
             case ArgumentType::STRING:
                 return is_string($value);
             case ArgumentType::BOOLEAN:
