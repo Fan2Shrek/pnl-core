@@ -4,6 +4,9 @@ namespace Pnl\App;
 
 class SettingsProvider
 {
+    /**
+     * @var array<string, array<string, string>>
+     */
     private array $config;
 
     public function load(string $file): void
@@ -14,6 +17,11 @@ class SettingsProvider
 
         $content = file_get_contents($file);
 
+        if (!$content) {
+            throw new \RuntimeException('Settings file is empty');
+        }
+
+        /** @phpstan-ignore-next-line */
         $this->config = json_decode($content, true);
     }
 
@@ -31,6 +39,7 @@ class SettingsProvider
             $config = $config[$key];
         }
 
+        /** @phpstan-ignore-next-line */
         return $config;
     }
 }

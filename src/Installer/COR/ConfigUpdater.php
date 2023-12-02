@@ -20,6 +20,11 @@ class ConfigUpdater extends AbsractInstaller
         $repositoryClient = RepositoryApi::createFromHttpLink($this->client, $httpLink);
 
         try {
+            /**
+             * @var array{
+             *  content: string,
+             * } $config
+             */
             $config = $repositoryClient->getFileContent('config/settings.json');
         } catch (\Exception $e) {
             return $pnlConfig;
@@ -30,13 +35,17 @@ class ConfigUpdater extends AbsractInstaller
         }
 
         $newSettings = $this->extractConfig($config);
+        $fileContent = file_get_contents($file);
 
-        $settings = json_decode(file_get_contents($file), true);
+        if (!$fileContent) {
+            $fileContent = '{}';
+        }
 
-        $settingsName = end(explode(' ', $pnlConfig->name));
-
+        /** @var array<string, array<string, string>|string> */
+        $settings = json_decode($fileContent, true);
+        $name = explode(' ', $pnlConfig->name);
+        $settingsName = end($name);
         $settings[strtolower($settingsName)] = $newSettings;
-
         $content = json_encode($settings, JSON_PRETTY_PRINT);
 
         file_put_contents($file, $content);
@@ -57,10 +66,13 @@ class ConfigUpdater extends AbsractInstaller
      * @param array{
      *  content: string,
      * } $result
+     *
+     * @return array<string, array<string, string>|string>
      */
     private function extractConfig(array $result): array
     {
         $burpConf = base64_decode($result['content']);
+        /** @var array<string, array<string, string>|string> */
         $converted = json_decode($burpConf, true);
 
         return $converted;
