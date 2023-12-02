@@ -3,6 +3,7 @@
 namespace Pnl\Installer\COR;
 
 use Pnl\Console\Output\Style\CustomStyle;
+use Pnl\Installer\GithubApi;
 use Pnl\Installer\PnlConfig;
 
 class InstallerCOR implements InstallerInterface
@@ -11,6 +12,7 @@ class InstallerCOR implements InstallerInterface
 
     public function __construct(
         private readonly PreInstaller $preInstaller,
+        private readonly GithubApi $githubApi,
     ) {
         $this->setupChain($preInstaller);
     }
@@ -31,7 +33,8 @@ class InstallerCOR implements InstallerInterface
         $preInstaller
             ->linkWith(new MainInstaller())
             ->linkWith(new ClassInstaller())
-            ->linkWith(new ExtensionsUpdater());
+            ->linkWith(new ExtensionsUpdater())
+            ->linkWith(new ConfigUpdater($this->githubApi));
     }
 
     public function check(PnlConfig $pnlConfig): bool

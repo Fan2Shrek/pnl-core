@@ -30,3 +30,9 @@ services:
     Pnl\Installer\GithubApi:
         arguments:
             - 'https://api.github.com'
+
+    Pnl\App\SettingsProvider:
+       synthetic: true
+
+    Pnl\Appllication:
+       synthetic: true

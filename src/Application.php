@@ -8,6 +8,7 @@ use Pnl\App\CommandRunnerInterface;
 use Pnl\App\CommandRunnerTrait;
 use Pnl\App\DependencyInjection\CommandCompiler;
 use Pnl\App\Exception\CommandNotFoundException;
+use Pnl\App\SettingsProvider;
 use Pnl\Composer\ComposerContext;
 use Pnl\Console\InputResolver;
 use Pnl\Console\InputResolverInterface;
@@ -122,6 +123,7 @@ class Application implements CommandRunnerInterface
             $this->registerCommands();
         }
 
+
         $this->isBooted = true;
     }
 
@@ -132,7 +134,8 @@ class Application implements CommandRunnerInterface
         $loader = new YamlFileLoader($builder, new FileLocator($this->appRoot . '/config'));
         $loader->load('services.yaml');
 
-        $builder->set($this::class, $this);
+        $settingsProvider = $this->loadSettingProvider();
+
         $builder->addCompilerPass(new CommandCompiler());
 
         if (empty($this->extensions)) {
@@ -141,7 +144,19 @@ class Application implements CommandRunnerInterface
 
         $builder->compile();
 
+        $builder->set($this::class, $this);
+        $builder->set($settingsProvider::class, $settingsProvider);
+
         $this->container = $builder;
+    }
+
+    private function loadSettingProvider(): SettingsProvider
+    {
+        $settingsProvider = new SettingsProvider();
+
+        $settingsProvider->load($this->appRoot . '/config/settings.json');
+
+        return $settingsProvider;
     }
 
     /**
