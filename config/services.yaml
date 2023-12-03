@@ -34,5 +34,5 @@ services:
     Pnl\App\SettingsProvider:
        synthetic: true
 
-    Pnl\Appllication:
+    Pnl\Application:
        synthetic: true
