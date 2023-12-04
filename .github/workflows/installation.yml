@@ -1,4 +1,4 @@
-name: PHP unit test
+name: installation test
 
 on: [push]
 
@@ -23,5 +23,8 @@ jobs:
       - name: install dependencies
         run: composer install
 
-      - name: php unit tests
-        run: vendor/bin/phpunit tests
+      - name: Install test extensions
+        run: ./pnl install git@github.com:Fan2Shrek/pnl-test.git
+
+      - name: run extensions tests
+        run: ./pnl pnltest test --secret=Hello_World!
