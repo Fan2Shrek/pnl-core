@@ -13,7 +13,7 @@ abstract class AbstractCommand implements CommandInterface
         return new ArgumentBag();
     }
 
-    public function getName(): string
+    final public function getName(): string
     {
         if (empty(static::NAME)) {
             throw new \Exception(sprintf('Command %s does not have a name :(', static::class));
