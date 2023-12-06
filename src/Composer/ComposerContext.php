@@ -54,7 +54,7 @@ readonly class ComposerContext
          *  name: string,
          *  type: string,
          *  autoload: array<string, string>,
-         *  authors: string[],
+         *  authors?: string[],
          *  require: string[],
          *  require-dev?: string[]
          * }
@@ -65,7 +65,7 @@ readonly class ComposerContext
             $json['name'],
             $json['type'],
             $json['autoload'],
-            $json['authors'],
+            $json['authors'] ?? [],
             $json['require'],
             $json['require-dev'] ?? []
         );
