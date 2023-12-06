@@ -51,22 +51,22 @@ readonly class ComposerContext
         }
 
         /** @var array{
-         *  name: string,
+         *  name?: string,
          *  type: string,
          *  autoload: array<string, string>,
          *  authors?: string[],
-         *  require: string[],
+         *  require?: string[],
          *  require-dev?: string[]
          * }
          */
         $json = json_decode($content, true);
 
         $self = new self(
-            $json['name'],
+            $json['name'] ?? '',
             $json['type'],
             $json['autoload'],
             $json['authors'] ?? [],
-            $json['require'],
+            $json['require'] ?? [],
             $json['require-dev'] ?? []
         );
 
