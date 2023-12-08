@@ -170,18 +170,22 @@ class HelpCommand extends AbstractCommand
             $this->printArgs($command);
         }
 
+        /** @phpstan-ignore-next-line */
         $this->style->newLine();
     }
 
-    private function printArgs(AbstractCommand $command): void
+    private function printArgs(CommandInterface $command): void
     {
         $args = $command::getArguments();
 
         $mask = "| %10.10s | %30.30s | %8.8s | %7.7s | %7.7s |\n";
 
+        if (null === $this->style) {
+            return;
+        }
+
         $this->style->newLine();
         $this->style->writeWithStyle(sprintf(PHP_EOL . $mask, 'Name', 'Description', 'Required', 'Type', 'default'), 'arg');
-
 
         foreach ($args->getAll() as $arg) {
             $this->style->writeWithStyle(
@@ -190,7 +194,8 @@ class HelpCommand extends AbstractCommand
                     $arg->getName(),
                     $arg->getDescription(),
                     $arg->isRequired() ? 'true' : 'false',
-                    null === $arg->getType() ? 'none' :  $arg->getType()->value,
+                    null === $arg->getType() ? 'none' : $arg->getType()->value,
+                    /** @phpstan-ignore-next-line */
                     $arg->getDefault()
                 ),
                 'arg'
