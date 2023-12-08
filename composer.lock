@@ -7,49 +7,6 @@
     "content-hash": "feb1061ec6ce12d73e935d76f9622653",
     "packages": [
         {
-            "name": "pnl/pnl-docker",
-            "version": "dev-main",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Fan2Shrek/pnl-docker.git",
-                "reference": "e32fd9e3ae943ab86064a4d50fae23847e763f81"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Fan2Shrek/pnl-docker/zipball/e32fd9e3ae943ab86064a4d50fae23847e763f81",
-                "reference": "e32fd9e3ae943ab86064a4d50fae23847e763f81",
-                "shasum": ""
-            },
-            "require": {
-                "pnl/core": "dev-develop",
-                "symfony/event-dispatcher": "^6.3",
-                "symfony/yaml": "^6.3"
-            },
-            "default-branch": true,
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Pnl\\PNLDocker\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fan2Shrek",
-                    "email": "pierre27.ambroise@gmail.com"
-                }
-            ],
-            "description": "Docker support for pnl",
-            "support": {
-                "issues": "https://github.com/Fan2Shrek/pnl-docker/issues",
-                "source": "https://github.com/Fan2Shrek/pnl-docker/tree/main"
-            },
-            "time": "2023-12-06T20:25:28+00:00"
-        },
-        {
             "name": "psr/container",
             "version": "2.0.2",
             "source": {

@@ -1,5 +1,2 @@
 {
-    "php": {
-        "socket": "\/var\/run\/docker.sock"
-    }
 }
