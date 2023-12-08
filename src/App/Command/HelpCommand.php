@@ -8,6 +8,7 @@ use Pnl\App\SettingsProvider;
 use Pnl\Console\Input\ArgumentBag;
 use Pnl\Console\Input\ArgumentType;
 use Pnl\Console\Input\InputInterface;
+use Pnl\Console\Output\ANSI\BackgroundColor;
 use Pnl\Console\Output\ANSI\Style as ANSIStyle;
 use Pnl\Console\Output\ANSI\TextColors;
 use Pnl\Console\Output\OutputInterface;
@@ -74,6 +75,11 @@ class HelpCommand extends AbstractCommand
             ->setColor(TextColors::GREEN)
             ->setStyle(ANSIStyle::BOLD);
 
+        $style->createStyle('arg')
+            ->setColor(TextColors::WHITE)
+            ->setBackground(BackgroundColor::RESET)
+            ->setStyle(ANSIStyle::BOLD);
+
         $this->style = $style;
     }
 
@@ -97,7 +103,7 @@ class HelpCommand extends AbstractCommand
         foreach ($this->commandList as $commands) {
             if (isset($commands[$commandName])) {
                 $command = $commands[$commandName];
-                $this->printCommand($command);
+                $this->printCommand($command, false, true);
 
                 return;
             }
@@ -131,7 +137,7 @@ class HelpCommand extends AbstractCommand
         }
     }
 
-    private function printCommand(CommandInterface $command, bool $indent = false): void
+    private function printCommand(CommandInterface $command, bool $indent = false, bool $withArg = false): void
     {
         if (null === $this->style) {
             throw new \Exception(sprintf('Style is not set, you should call %s() before', 'setStyle'));
@@ -159,6 +165,36 @@ class HelpCommand extends AbstractCommand
             ),
             'description'
         );
+
+        if ($withArg) {
+            $this->printArgs($command);
+        }
+
         $this->style->newLine();
+    }
+
+    private function printArgs(AbstractCommand $command): void
+    {
+        $args = $command::getArguments();
+
+        $mask = "| %10.10s | %30.30s | %8.8s | %7.7s | %7.7s |\n";
+
+        $this->style->newLine();
+        $this->style->writeWithStyle(sprintf(PHP_EOL . $mask, 'Name', 'Description', 'Required', 'Type', 'default'), 'arg');
+
+
+        foreach ($args->getAll() as $arg) {
+            $this->style->writeWithStyle(
+                sprintf(
+                    $mask,
+                    $arg->getName(),
+                    $arg->getDescription(),
+                    $arg->isRequired() ? 'true' : 'false',
+                    null === $arg->getType() ? 'none' :  $arg->getType()->value,
+                    $arg->getDefault()
+                ),
+                'arg'
+            );
+        }
     }
 }
