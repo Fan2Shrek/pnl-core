@@ -1,18 +1,21 @@
 <?php
 
-namespace Pnl\Test\Watcher;
+namespace Pnl\Watcher;
 
-use Closure;
-
+/**
+ * @template T
+ */
 class Watcher
 {
+    /** @var array<T|array<T>> */
     private array $filesMap = [];
 
-    private Closure $closure;
+    private \Closure $closure;
 
-    private mixed $output;
+    /** @var resource */
+    private $output;
 
-    private ?Closure $exceptionHandler = null;
+    private ?\Closure $exceptionHandler = null;
 
     private function observDir(string $dirName, string $parent = null): void
     {
@@ -20,6 +23,7 @@ class Watcher
             $dirName = $parent . '/' . $dirName;
         }
 
+        /** @phpstan-ignore-next-line */
         foreach (array_diff(scandir($dirName), ['.', '..']) as $file) {
             $path =  $dirName . '/' . $file;
 
@@ -30,12 +34,14 @@ class Watcher
             }
 
             if (!isset($this->filesMap[$path])) {
+                /** @phpstan-ignore-next-line */
                 $this->filesMap[$path] = filemtime($path);
 
                 continue;
             }
 
             if ($this->filesMap[$path] !== filemtime($path)) {
+                /** @phpstan-ignore-next-line */
                 $this->filesMap[$path] = filemtime($path);
 
                 $this->execute();
@@ -48,7 +54,7 @@ class Watcher
         }
     }
 
-    public function watch(string $path, Closure $closure): void
+    public function watch(string $path, \Closure $closure): never
     {
         $this->closure = $closure;
 
@@ -57,6 +63,7 @@ class Watcher
         do {
             sleep(1);
             $this->observDir($path);
+            /** @phpstan-ignore-next-line */
         } while (1);
     }
 
@@ -82,7 +89,7 @@ class Watcher
         }
     }
 
-    public function setExceptionHandler(Closure $exceptionHandler): void
+    public function setExceptionHandler(\Closure $exceptionHandler): void
     {
         $this->exceptionHandler = $exceptionHandler;
     }
