@@ -3,7 +3,7 @@
 namespace Pnl\Test;
 
 use Pnl\Application;
-use Pnl\Test\Watcher\Watcher;
+use Pnl\Watcher\Watcher;
 
 class EndlessApplication extends Application
 {
